@@ -7,8 +7,6 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
-
-
 AGladiatorPlayer::AGladiatorPlayer()
 {
 	//PrimaryActorTick.bCanEverTick = true;
@@ -47,7 +45,8 @@ AGladiatorPlayer::AGladiatorPlayer()
 	// Attack
 	attackTimerTime = 0.2f;
 
-
+	// Life
+	life = 5;
 }
 
 // Called every frame

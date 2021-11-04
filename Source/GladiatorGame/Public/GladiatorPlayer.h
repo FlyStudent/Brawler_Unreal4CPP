@@ -30,18 +30,19 @@ public:
 	AGladiatorPlayer();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-		float BaseTurnRate;
+	float BaseTurnRate;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-		float BaseLookUpRate;
+	float BaseLookUpRate;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int life;
 
 	FTimerHandle attackTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		float attackTimerTime;
+	float attackTimerTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		bool attack;
-
+	bool attack;
 
 
 	// Called every frame
@@ -52,5 +53,4 @@ public:
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
 };
