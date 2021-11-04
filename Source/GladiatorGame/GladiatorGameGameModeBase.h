@@ -14,4 +14,8 @@ class GLADIATORGAME_API AGladiatorGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+
+	AGladiatorGameGameModeBase();
+
 };
