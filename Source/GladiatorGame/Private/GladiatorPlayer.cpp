@@ -3,6 +3,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -43,6 +44,9 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 ///// ADDITIONAL VARIABLE
+
+	// Meshes
+	//weaponMesh = CreateOptionalSubobject<>
 
 	// Attack
 	attackTimerTime = 0.3f;

@@ -15,6 +15,12 @@ class GLADIATORGAME_API AGladiatorPlayer : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+		class USkeletalMeshComponent* weaponMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+		USkeletalMeshComponent* shieldMesh;
+
 private:
 	FVector CurrentVelocity;
 
