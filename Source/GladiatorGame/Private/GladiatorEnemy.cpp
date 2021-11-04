@@ -16,6 +16,11 @@ AGladiatorEnemy::AGladiatorEnemy()
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 60.f);
 
+	// Attack
+	attackTimerTime = 0.3f;
+
+	// Life
+	life = 3;
 }
 
 void AGladiatorEnemy::BeginPlay()
@@ -37,19 +42,3 @@ void AGladiatorEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AGladiatorEnemy::Attack()
-{
-	if (!attack)
-	{
-		attack = true;
-		GetWorldTimerManager().ClearTimer(attackTimer);
-		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorEnemy::StopAttack, 1.0f, true, attackTimerTime);
-	}
-}
-
-void AGladiatorEnemy::StopAttack()
-{
-	attack = false;
-}
-

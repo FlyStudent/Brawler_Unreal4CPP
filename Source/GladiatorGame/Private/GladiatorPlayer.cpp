@@ -116,21 +116,6 @@ void AGladiatorPlayer::MoveRight(float Value)
 	}
 }
 
-void AGladiatorPlayer::Attack()
-{
-	if (CanMove())
-	{
-		attack = true;
-		GetWorldTimerManager().ClearTimer(attackTimer);
-		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorPlayer::StopAttack, 1.0f, true, attackTimerTime);
-	}	
-}
-
-void AGladiatorPlayer::StopAttack()
-{
-	attack = false;
-}
-
 void AGladiatorPlayer::Shield()
 {
 	if (!attack)
