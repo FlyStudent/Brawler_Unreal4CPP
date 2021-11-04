@@ -15,6 +15,12 @@ class GLADIATORGAME_API AGladiatorPlayer : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+		class USkeletalMeshComponent* weaponMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+		USkeletalMeshComponent* shieldMesh;
+
 private:
 	FVector CurrentVelocity;
 
@@ -25,6 +31,9 @@ private:
 
 	void Attack();
 	void StopAttack();
+
+	void Shield();
+	void StopShield();
 
 public:	
 	AGladiatorPlayer();
@@ -37,13 +46,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int life;
+	/// ATTACK & SHIELD
 
 	FTimerHandle attackTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float attackTimerTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool attack;
+		bool attack;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool usingShield;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -53,4 +65,7 @@ public:
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FORCEINLINE bool CanMove() const { return !attack && !usingShield; }
+
 };
