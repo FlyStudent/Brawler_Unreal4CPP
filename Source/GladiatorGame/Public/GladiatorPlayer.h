@@ -19,7 +19,13 @@ class GLADIATORGAME_API AGladiatorPlayer : public ACharacter
 		class USkeletalMeshComponent* weaponMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-		USkeletalMeshComponent* shieldMesh;
+		class USkeletalMeshComponent* shieldMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* attackCollider;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* defenseCollider;
 
 private:
 	FVector CurrentVelocity;

@@ -1,17 +1,20 @@
 #include "GladiatorPlayer.h"
 
 #include "HeadMountedDisplayFunctionLibrary.h"
-#include "Camera/CameraComponent.h"
+
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AGladiatorPlayer::AGladiatorPlayer()
 {
 	//PrimaryActorTick.bCanEverTick = true;
-
+	AutoPossessPlayer = TEnumAsByte<EAutoReceiveInput::Type>(EAutoReceiveInput::Player0);
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 60.f);
 
@@ -41,12 +44,32 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+
 ///// ADDITIONAL VARIABLE
 
 	// Meshes
-	//weaponMesh = CreateOptionalSubobject<>
+	weaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	weaponMesh->AttachTo(GetMesh(), "WeaponPoint", EAttachLocation::SnapToTarget, true);
+
+	shieldMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShieldMesh"));
+	shieldMesh->AttachTo(GetMesh(), "DualWeaponPoint", EAttachLocation::SnapToTarget, true);
+
+	GetMesh()->SetWorldLocation(FVector(0.f, 0.f, -70.f));
+
+	// Collider
+	attackCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Attack Collider"));
+	attackCollider->SetupAttachment(weaponMesh);
+	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
+	attackCollider->Deactivate();
+
+	defenseCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Defense Collider"));
+	defenseCollider->SetupAttachment(shieldMesh);
+	defenseCollider->Deactivate();
+	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
+	defenseCollider->SetSphereRadius(50.f);
 
 	// Attack
+
 	attackTimerTime = 0.3f;
 
 	// Life
@@ -121,6 +144,9 @@ void AGladiatorPlayer::Attack()
 	if (CanMove())
 	{
 		attack = true;
+
+		attackCollider->Activate();
+
 		GetWorldTimerManager().ClearTimer(attackTimer);
 		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorPlayer::StopAttack, 1.0f, true, attackTimerTime);
 	}	
@@ -128,6 +154,7 @@ void AGladiatorPlayer::Attack()
 
 void AGladiatorPlayer::StopAttack()
 {
+	attackCollider->Deactivate();
 	attack = false;
 }
 
@@ -136,10 +163,12 @@ void AGladiatorPlayer::Shield()
 	if (!attack)
 	{
 		usingShield = true;
+		defenseCollider->Activate();
 	}
 }
 
 void AGladiatorPlayer::StopShield()
 {
 	usingShield = false;
+	defenseCollider->Deactivate();
 }
