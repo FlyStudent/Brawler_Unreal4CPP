@@ -23,6 +23,9 @@ private:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 
+	void Attack();
+	void StopAttack();
+
 public:	
 	AGladiatorPlayer();
 
@@ -31,6 +34,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 		float BaseLookUpRate;
+
+
+	FTimerHandle attackTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float attackTimerTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool attack;
 
 
 

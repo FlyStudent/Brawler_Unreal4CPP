@@ -7,6 +7,8 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
+
+
 AGladiatorPlayer::AGladiatorPlayer()
 {
 	//PrimaryActorTick.bCanEverTick = true;
@@ -39,6 +41,13 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+///// ADDITIONAL VARIABLE
+
+	// Attack
+	attackTimerTime = 0.2f;
+
+
 }
 
 // Called every frame
@@ -61,6 +70,8 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("TurnRate", this, &AGladiatorPlayer::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGladiatorPlayer::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 }
 
 void AGladiatorPlayer::TurnAtRate(float Rate)
@@ -76,7 +87,7 @@ void AGladiatorPlayer::LookUpAtRate(float Rate)
 
 void AGladiatorPlayer::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && (!attack))
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -89,7 +100,7 @@ void AGladiatorPlayer::MoveForward(float Value)
 
 void AGladiatorPlayer::MoveRight(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Value != 0.0f) && (!attack))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -98,4 +109,19 @@ void AGladiatorPlayer::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AGladiatorPlayer::Attack()
+{
+	if (!attack)
+	{
+		attack = true;
+		GetWorldTimerManager().ClearTimer(attackTimer);
+		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorPlayer::StopAttack, 1.0f, true, attackTimerTime);
+	}	
+}
+
+void AGladiatorPlayer::StopAttack()
+{
+	attack = false;
 }
