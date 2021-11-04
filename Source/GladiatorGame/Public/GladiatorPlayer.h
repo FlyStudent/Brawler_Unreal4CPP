@@ -26,6 +26,9 @@ private:
 	void Attack();
 	void StopAttack();
 
+	void Shield();
+	void StopShield();
+
 public:	
 	AGladiatorPlayer();
 
@@ -35,6 +38,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 		float BaseLookUpRate;
 
+	/// ATTACK & SHIELD
 
 	FTimerHandle attackTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -42,7 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		bool attack;
 
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool usingShield;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -52,5 +57,7 @@ public:
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	FORCEINLINE bool CanMove() const { return !attack && !usingShield; }
 
 };

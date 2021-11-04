@@ -45,7 +45,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 ///// ADDITIONAL VARIABLE
 
 	// Attack
-	attackTimerTime = 0.2f;
+	attackTimerTime = 0.3f;
 
 
 }
@@ -72,6 +72,8 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGladiatorPlayer::LookUpAtRate);
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
+	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
+	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
 }
 
 void AGladiatorPlayer::TurnAtRate(float Rate)
@@ -87,7 +89,7 @@ void AGladiatorPlayer::LookUpAtRate(float Rate)
 
 void AGladiatorPlayer::MoveForward(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f) && (!attack))
+	if ((Controller != nullptr) && (Value != 0.0f) && CanMove())
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -100,7 +102,7 @@ void AGladiatorPlayer::MoveForward(float Value)
 
 void AGladiatorPlayer::MoveRight(float Value)
 {
-	if ((Controller != nullptr) && (Value != 0.0f) && (!attack))
+	if ((Controller != nullptr) && (Value != 0.0f) && CanMove())
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -113,7 +115,7 @@ void AGladiatorPlayer::MoveRight(float Value)
 
 void AGladiatorPlayer::Attack()
 {
-	if (!attack)
+	if (CanMove())
 	{
 		attack = true;
 		GetWorldTimerManager().ClearTimer(attackTimer);
@@ -124,4 +126,17 @@ void AGladiatorPlayer::Attack()
 void AGladiatorPlayer::StopAttack()
 {
 	attack = false;
+}
+
+void AGladiatorPlayer::Shield()
+{
+	if (!attack)
+	{
+		usingShield = true;
+	}
+}
+
+void AGladiatorPlayer::StopShield()
+{
+	usingShield = false;
 }
