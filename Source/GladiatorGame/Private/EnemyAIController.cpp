@@ -8,7 +8,7 @@
 
 #include "GladiatorEnemy.h"
 
-AEnemyAIController::AEnemyAIController(const FObjectInitializer& ObjectInitializer)
+AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializer)
 {
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> obj(TEXT("/Game/AI/Enemy_BehaviorTree.Enemy_BehaviorTree"));
 	if (obj.Succeeded())
@@ -32,8 +32,16 @@ void AEnemyAIController::BeginPlay()
 
 void AEnemyAIController::Tick(float deltaSeconds)
 {
+	Super::Tick(deltaSeconds);
+
+	auto owner = Cast<AGladiatorEnemy>(GetPawn());
+	if (owner)
+	{
+		blackboard->SetValueAsInt("life", owner->life);
+	}
 }
 
 void AEnemyAIController::OnPossess(APawn* const pawn) 
 {
+	Super::OnPossess(pawn);
 }

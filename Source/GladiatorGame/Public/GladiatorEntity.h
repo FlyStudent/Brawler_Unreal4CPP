@@ -15,8 +15,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void Attack();
-	virtual void StopAttack();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* weaponMesh;
@@ -29,6 +27,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class USphereComponent* defenseCollider;
+
+public:	
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int life;
@@ -43,10 +43,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
 
-public:	
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void Attack();
+	virtual void StopAttack();
 
 	FORCEINLINE bool CanMove() const { return !attack && !usingShield; }
 };

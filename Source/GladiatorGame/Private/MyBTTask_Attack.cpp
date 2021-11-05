@@ -15,5 +15,10 @@ EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 {
 	const auto controller = OwnerComp.GetAIOwner();
 
+	if (auto enemy = Cast<AGladiatorEnemy>(controller->GetPawn()))
+	{
+		enemy->Attack();
+	}
+
 	return EBTNodeResult::Succeeded;
 }

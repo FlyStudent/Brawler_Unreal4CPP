@@ -22,11 +22,11 @@ private:
 	class UBlackboardComponent* blackboard;
 
 public:
-	AEnemyAIController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	AEnemyAIController(FObjectInitializer const& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void BeginPlay();
+	void BeginPlay() override;
 
-	virtual void Tick(float deltaSeconds);
+	void Tick(float deltaSeconds) override;
 
 	virtual void OnPossess(APawn* const pawn) override;
 
