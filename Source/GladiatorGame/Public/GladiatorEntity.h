@@ -49,8 +49,14 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void Attack();
+	UFUNCTION(BlueprintCallable)
+		virtual void Attack();
 	virtual void StopAttack();
+
+	UFUNCTION(BlueprintCallable)
+		virtual void Heal(int heal);
+	UFUNCTION(BlueprintCallable)
+		virtual void Hurt(int dmg);
 
 	FORCEINLINE bool CanMove() const { return !attack && !usingShield; }
 	FORCEINLINE bool IsAttacking() const { return attack; }

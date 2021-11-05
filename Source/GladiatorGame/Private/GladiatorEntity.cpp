@@ -62,6 +62,7 @@ void AGladiatorEntity::Attack()
 	if (!attack)
 	{
 		attack = true;
+		attackCollider->Activate();
 		GetWorldTimerManager().ClearTimer(attackTimer);
 		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorEntity::StopAttack, 1.0f, true, attackTimerTime);
 	}
@@ -70,4 +71,15 @@ void AGladiatorEntity::Attack()
 void AGladiatorEntity::StopAttack()
 {
 	attack = false;
+	attackCollider->Deactivate();
+}
+
+void AGladiatorEntity::Heal(int heal)
+{
+	Hurt(-heal);
+}
+
+void AGladiatorEntity::Hurt(int dmg)
+{
+	life = FMath::Max(life - dmg, 0);
 }
