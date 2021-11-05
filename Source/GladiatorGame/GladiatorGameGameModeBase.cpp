@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Public/GladiatorPlayer.h"
 #include "GladiatorGameGameModeBase.h"
+#include "Public/GladiatorPlayer.h"
 
 AGladiatorGameGameModeBase::AGladiatorGameGameModeBase()
 {

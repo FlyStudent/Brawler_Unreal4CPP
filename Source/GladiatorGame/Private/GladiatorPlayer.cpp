@@ -2,7 +2,6 @@
 
 #include "HeadMountedDisplayFunctionLibrary.h"
 
-#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -15,8 +14,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 {
 	//PrimaryActorTick.bCanEverTick = true;
 	AutoPossessPlayer = TEnumAsByte<EAutoReceiveInput::Type>(EAutoReceiveInput::Player0);
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 60.f);
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -47,26 +44,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 ///// ADDITIONAL VARIABLE
 
-	// Meshes
-	weaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	weaponMesh->AttachTo(GetMesh(), "WeaponPoint", EAttachLocation::SnapToTarget, true);
-
-	shieldMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShieldMesh"));
-	shieldMesh->AttachTo(GetMesh(), "DualWeaponPoint", EAttachLocation::SnapToTarget, true);
-
-	GetMesh()->SetWorldLocation(FVector(0.f, 0.f, -70.f));
-
-	// Collider
-	attackCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Attack Collider"));
-	attackCollider->SetupAttachment(weaponMesh);
-	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
-	attackCollider->Deactivate();
-
-	defenseCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Defense Collider"));
-	defenseCollider->SetupAttachment(shieldMesh);
-	defenseCollider->Deactivate();
-	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
-	defenseCollider->SetSphereRadius(50.f);
+	
 
 	// Attack
 

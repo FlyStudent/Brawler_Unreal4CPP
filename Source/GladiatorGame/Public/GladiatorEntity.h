@@ -24,6 +24,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* shieldMesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* attackCollider;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class USphereComponent* defenseCollider;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int life;
 	/// ATTACK & SHIELD

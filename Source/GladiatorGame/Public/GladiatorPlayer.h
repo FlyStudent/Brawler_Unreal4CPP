@@ -15,13 +15,6 @@ class GLADIATORGAME_API AGladiatorPlayer : public AGladiatorEntity
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* attackCollider;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* defenseCollider;
-
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
