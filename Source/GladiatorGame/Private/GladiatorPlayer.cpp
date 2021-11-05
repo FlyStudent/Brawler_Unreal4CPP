@@ -12,6 +12,7 @@
 
 AGladiatorPlayer::AGladiatorPlayer()
 {
+#pragma region Set Camera and Controller
 	//PrimaryActorTick.bCanEverTick = true;
 	AutoPossessPlayer = TEnumAsByte<EAutoReceiveInput::Type>(EAutoReceiveInput::Player0);
 
@@ -40,11 +41,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-
-///// ADDITIONAL VARIABLE
-
-	
+#pragma endregion
 
 	// Attack
 
@@ -54,13 +51,11 @@ AGladiatorPlayer::AGladiatorPlayer()
 	life = 5;
 }
 
-// Called every frame
 void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -87,7 +82,6 @@ void AGladiatorPlayer::TurnAtRate(float Rate)
 
 void AGladiatorPlayer::LookUpAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 

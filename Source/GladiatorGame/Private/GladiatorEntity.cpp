@@ -1,4 +1,3 @@
-
 #include "GladiatorEntity.h"
 
 #include "Components/CapsuleComponent.h"
@@ -34,24 +33,18 @@ AGladiatorEntity::AGladiatorEntity()
 	defenseCollider->Deactivate();
 	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
 	defenseCollider->SetSphereRadius(50.f);
-
 }
 
-// Called when the game starts or when spawned
 void AGladiatorEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
 void AGladiatorEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
-// Called to bind functionality to input
 void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

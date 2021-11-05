@@ -9,13 +9,7 @@ class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	AGladiatorEntity();
-
 protected:
-	virtual void BeginPlay() override;
-
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* weaponMesh;
 
@@ -23,16 +17,18 @@ protected:
 	USkeletalMeshComponent* shieldMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* attackCollider;
+	class USphereComponent* attackCollider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* defenseCollider;
+	class USphereComponent* defenseCollider;
 
-public:	
+	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+public:		
+	AGladiatorEntity();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int life;
-	/// ATTACK & SHIELD
 
 	FTimerHandle attackTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -42,7 +38,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
-
 
 	virtual void Tick(float DeltaTime) override;
 
