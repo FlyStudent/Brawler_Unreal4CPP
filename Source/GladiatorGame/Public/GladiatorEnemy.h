@@ -3,17 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "GladiatorEntity.h"
 #include "GladiatorEnemy.generated.h"
 
 UCLASS()
-class GLADIATORGAME_API AGladiatorEnemy : public ACharacter
+class GLADIATORGAME_API AGladiatorEnemy : public AGladiatorEntity
 {
 	GENERATED_BODY()
-
-private:
-	void Attack();
-	void StopAttack();
 
 protected:
 	virtual void BeginPlay() override;
@@ -21,11 +17,6 @@ protected:
 public:	
 	AGladiatorEnemy();
 
-	FTimerHandle attackTimer;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		float attackTimerTime;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		bool attack;
 
 	virtual void Tick(float DeltaTime) override;
 };
