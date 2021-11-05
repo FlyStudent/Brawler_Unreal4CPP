@@ -37,7 +37,7 @@ void AEnemyAIController::Tick(float deltaSeconds)
 	auto owner = Cast<AGladiatorEnemy>(GetPawn());
 	if (owner)
 	{
-		blackboard->SetValueAsInt("life", owner->life);
+		blackboard->SetValueAsInt("life", owner->GetLife());
 	}
 }
 
