@@ -1,6 +1,6 @@
 #include "GladiatorEnemy.h"
 
-#include "AIController.h"
+#include "EnemyAIController.h"
 #include "GladiatorPlayer.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -24,8 +24,9 @@ void AGladiatorEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	controller = Cast<AAIController>(GetController());
 	player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	controller = Cast<AAIController>(GetController());
+	Cast<AEnemyAIController>(controller)->SetPlayer(player);
 }
 
 void AGladiatorEnemy::EntityDead()
@@ -37,9 +38,6 @@ void AGladiatorEnemy::EntityDead()
 void AGladiatorEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (controller && player)
-		controller->MoveToActor(player, distanceFromPlayer);
 }
 
 // Collisions
@@ -57,5 +55,4 @@ void AGladiatorEnemy::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp,
 		if (player)
 			player->Hurt(damage);
 	}
-	
 }

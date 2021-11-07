@@ -4,9 +4,6 @@
 #include "AIController.h"
 #include "EnemyAIController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class GLADIATORGAME_API AEnemyAIController : public AAIController
 {
@@ -20,16 +17,18 @@ private:
 		class UBehaviorTree* bTree;
 
 	class UBlackboardComponent* blackboard;
+	class AGladiatorPlayer* player;
 
 public:
 	AEnemyAIController(FObjectInitializer const& ObjectInitializer = FObjectInitializer::Get());
 
 	void BeginPlay() override;
+	void SetPlayer(class AGladiatorPlayer* player);
+	void MoveBackward();
 
 	void Tick(float deltaSeconds) override;
 
 	virtual void OnPossess(APawn* const pawn) override;
 
 	FORCEINLINE class UBlackboardComponent* GetBlackboard() const { return blackboard; };
-
 };

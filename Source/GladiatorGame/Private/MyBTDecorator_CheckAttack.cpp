@@ -1,4 +1,3 @@
-
 #include "MyBTDecorator_CheckAttack.h"
 
 #include "AIController.h"
