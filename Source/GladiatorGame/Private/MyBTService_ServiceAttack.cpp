@@ -21,6 +21,6 @@ void UMyBTService_ServiceAttack::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	if (owner)
 	{
 		blackboard->SetValueAsString("Debug", "WORKING");
-		blackboard->SetValueAsBool(GetSelectedBlackboardKey(), owner->attack);
+		blackboard->SetValueAsBool(GetSelectedBlackboardKey(), owner->IsAttacking());
 	}
 }
