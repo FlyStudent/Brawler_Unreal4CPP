@@ -9,9 +9,6 @@ class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	AGladiatorEntity();
-
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -38,10 +35,10 @@ protected:
 	USkeletalMeshComponent* shieldMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* attackCollider;
+	class USphereComponent* attackCollider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class USphereComponent* defenseCollider;
+	class USphereComponent* defenseCollider;
 
 	UFUNCTION()
 		virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -50,6 +47,7 @@ protected:
 
 public:	
 
+	AGladiatorEntity();
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
