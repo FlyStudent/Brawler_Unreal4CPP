@@ -4,8 +4,7 @@
 #include "GladiatorEntity.h"
 #include "GameFramework/Controller.h"
 
-#include "AIController.h"
-#include "GladiatorPlayer.h"
+
 
 #include "GladiatorEnemy.generated.h"
 
@@ -15,8 +14,8 @@ class GLADIATORGAME_API AGladiatorEnemy : public AGladiatorEntity
 	GENERATED_BODY()
 
 private:
-	AAIController* controller;
-	APawn* player;
+	class AAIController* controller;
+	class AGladiatorPlayer* player;
 
 	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 

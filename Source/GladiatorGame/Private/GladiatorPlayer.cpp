@@ -49,9 +49,11 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 	// Attack
 	attackTimerTime = 0.3f;
+	invincibilityTimerTime = 2.f;
 
 	// Life
 	life = 5;
+	damage = 1;
 }
 
 void AGladiatorPlayer::BeginPlay()
@@ -139,21 +141,15 @@ void AGladiatorPlayer::StopShield()
 
 // Collisions
 
-void AGladiatorPlayer::OnAttackBeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult)
+void AGladiatorPlayer::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+											 bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (attackCollider->IsActive())
 	{
 		auto enemy = Cast<AGladiatorEnemy>(OtherActor);
 
 		if (enemy)
-		{
-			enemy->Hurt(1);
-		}
+			enemy->Hurt(damage);
 	}
 }

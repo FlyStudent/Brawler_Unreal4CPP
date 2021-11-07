@@ -14,12 +14,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int life;
 
+	FTimerHandle invincibilityTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Invincibility)
+	float invincibilityTimerTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Invincibility)
+	bool invincibility;
+
 	/// ATTACK & SHIELD
 	FTimerHandle attackTimer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	float attackTimerTime;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 	bool attack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
+	int damage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
@@ -43,6 +51,9 @@ protected:
 	UFUNCTION()
 		virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void StopInvincibility();
+	virtual void StopAttack();
+
 	virtual void EntityDead();
 
 public:	
@@ -54,7 +65,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Attack();
-	virtual void StopAttack();
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Heal(int heal);

@@ -31,6 +31,7 @@ AGladiatorEntity::AGladiatorEntity()
 	defenseCollider->SetupAttachment(shieldMesh);
 	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
 	defenseCollider->SetSphereRadius(50.f);
+
 }
 
 void AGladiatorEntity::BeginPlay()
@@ -78,6 +79,11 @@ void AGladiatorEntity::StopAttack()
 	attackCollider->Deactivate();
 }
 
+void AGladiatorEntity::StopInvincibility()
+{
+	invincibility = false;
+}
+
 void AGladiatorEntity::Heal(int heal)
 {
 	Hurt(-heal);
@@ -85,18 +91,22 @@ void AGladiatorEntity::Heal(int heal)
 
 void AGladiatorEntity::Hurt(int dmg)
 {
-	life = FMath::Max(life - dmg, 0);
+	if (!invincibility) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Get hurt"));
+		life = FMath::Max(life - dmg, 0);
+
+		invincibility = true;
+		GetWorldTimerManager().ClearTimer(invincibilityTimer);
+		GetWorldTimerManager().SetTimer(invincibilityTimer, this, &AGladiatorEntity::StopInvincibility, 1.0f, true, invincibilityTimerTime);
+	}
+
 }
 
 // COLLISIONS
 
-void AGladiatorEntity::OnAttackBeginOverlap(
-	UPrimitiveComponent* OverlappedComp,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult)
+void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+											 bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (attackCollider->IsActive())
 	{
