@@ -6,6 +6,8 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 
@@ -30,15 +32,43 @@ void AGladiatorEnemy::BeginPlay()
 	AAIController* controller = Cast<AAIController>(GetController());
 	APawn* player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GO !"));
 	if (controller && player)
 	{
 		controller->MoveToActor(player);
 	}
 }
 
+void AGladiatorEnemy::EntityDead()
+{
+	Super::EntityDead();
+	Destroy();
+}
+
 void AGladiatorEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+// Collisions
+
+void AGladiatorEnemy::OnAttackBeginOverlap(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	Super::OnAttackBeginOverlap(OverlappedComp,	OtherActor,	OtherComp,	OtherBodyIndex,	bFromSweep,	SweepResult);
+
+	if (attackCollider->IsActive())
+	{
+		auto player = Cast<AGladiatorPlayer>(OtherActor);
+
+		if (player)
+		{
+			player->Hurt(1);
+		}
+	}
 }

@@ -1,4 +1,5 @@
 #include "GladiatorPlayer.h"
+#include "GladiatorEnemy.h"
 
 #include "HeadMountedDisplayFunctionLibrary.h"
 
@@ -44,10 +45,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 ///// ADDITIONAL VARIABLE
 
-	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorPlayer::OnAttackBeginOverlap);
-
 	// Attack
-
 	attackTimerTime = 0.3f;
 
 	// Life
@@ -149,5 +147,13 @@ void AGladiatorPlayer::OnAttackBeginOverlap(
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Overlap !"));
+	if (attackCollider->IsActive())
+	{
+		auto enemy = Cast<AGladiatorEnemy>(OtherActor);
+
+		if (enemy)
+		{
+			enemy->Hurt(1);
+		}
+	}
 }

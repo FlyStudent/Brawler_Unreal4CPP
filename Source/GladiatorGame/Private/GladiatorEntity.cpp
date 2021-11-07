@@ -27,11 +27,9 @@ AGladiatorEntity::AGladiatorEntity()
 	attackCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Attack Collider"));
 	attackCollider->SetupAttachment(weaponMesh);
 	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
-	attackCollider->Deactivate();
 
 	defenseCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Defense Collider"));
 	defenseCollider->SetupAttachment(shieldMesh);
-	defenseCollider->Deactivate();
 	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
 	defenseCollider->SetSphereRadius(50.f);
 
@@ -41,6 +39,13 @@ AGladiatorEntity::AGladiatorEntity()
 void AGladiatorEntity::BeginPlay()
 {
 	Super::BeginPlay();
+
+	attackCollider->Deactivate();
+	defenseCollider->Deactivate();
+}
+
+void AGladiatorEntity::EntityDead() 
+{
 	
 }
 
@@ -49,6 +54,10 @@ void AGladiatorEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!IsAlive())
+	{
+		EntityDead();
+	}
 }
 
 // Called to bind functionality to input
@@ -82,4 +91,19 @@ void AGladiatorEntity::Heal(int heal)
 void AGladiatorEntity::Hurt(int dmg)
 {
 	life = FMath::Max(life - dmg, 0);
+}
+
+// COLLISIONS
+
+void AGladiatorEntity::OnAttackBeginOverlap(
+	UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	if (attackCollider->IsActive())
+	{
+	}
 }

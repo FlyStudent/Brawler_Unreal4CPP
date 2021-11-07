@@ -43,6 +43,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		class USphereComponent* defenseCollider;
 
+	UFUNCTION()
+		virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	virtual void EntityDead();
+
 public:	
 
 	virtual void Tick(float DeltaTime) override;
@@ -62,4 +67,5 @@ public:
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
+	FORCEINLINE int IsAlive() const { return life > 0; }
 };
