@@ -25,6 +25,9 @@ void AEnemyAIController::BeginPlay()
 	Super::BeginPlay();
 	RunBehaviorTree(bTree);
 	behaviorTreeComponent->StartTree(*bTree);
+
+	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
+	ResetAttackTimer();
 }
 
 void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
@@ -33,11 +36,16 @@ void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
 	blackboard->SetValueAsObject("player", player);
 }
 
+void AEnemyAIController::ResetAttackTimer()
+{
+	blackboard->SetValueAsFloat("attackTimer", FMath::RandRange(2.f, 6.f));
+}
+
+
 void AEnemyAIController::MoveBackward()
 {	
-	Cast<AGladiatorEnemy>(GetPawn())->bUseControllerRotationYaw = false;
 	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
-	const FVector location = GetPawn()->GetActorLocation() + Direction.Normalize();
+	const FVector location = GetPawn()->GetActorLocation() + Direction;
 	MoveToLocation(location);
 }
 

@@ -10,6 +10,7 @@ class GLADIATORGAME_API AEnemyAIController : public AAIController
 	GENERATED_BODY()
 
 private:
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 		class UBehaviorTreeComponent* behaviorTreeComponent;
 
@@ -20,10 +21,16 @@ private:
 	class AGladiatorPlayer* player;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
+		bool prepareAttack;
+
 	AEnemyAIController(FObjectInitializer const& ObjectInitializer = FObjectInitializer::Get());
 
 	void BeginPlay() override;
+	
 	void SetPlayer(class AGladiatorPlayer* player);
+	void ResetAttackTimer();
+
 	void MoveBackward();
 
 	void Tick(float deltaSeconds) override;

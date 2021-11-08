@@ -59,8 +59,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 void AGladiatorPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorPlayer::OnAttackBeginOverlap);
 }
 
 // Called every frame

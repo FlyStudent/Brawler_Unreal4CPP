@@ -40,6 +40,8 @@ void AGladiatorEntity::BeginPlay()
 
 	attackCollider->Deactivate();
 	defenseCollider->Deactivate();
+
+	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
 }
 
 void AGladiatorEntity::EntityDead() 
@@ -77,6 +79,8 @@ void AGladiatorEntity::StopAttack()
 {
 	attack = false;
 	attackCollider->Deactivate();
+	GetWorldTimerManager().ClearTimer(attackTimer);
+	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, TEXT("Stop Attack"));
 }
 
 void AGladiatorEntity::StopInvincibility()

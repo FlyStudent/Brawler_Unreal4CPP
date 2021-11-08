@@ -11,7 +11,7 @@
 
 AGladiatorEnemy::AGladiatorEnemy()
 {
-	attackTimerTime = 0.3f;
+	attackTimerTime = 0.5f;
 	invincibilityTimerTime = 0.2f;
 
 	life = 3;
