@@ -12,13 +12,14 @@
 
 AGladiatorEnemy::AGladiatorEnemy()
 {
-	attackTimerTime = 0.3f;
+	attackTimerTime = 0.5f;
 	invincibilityTimerTime = 0.2f;
 
 	life = 3;
 	damage = 1;
 
-	distanceFromPlayer = 300.f;
+	minDistanceFromPlayer = 300.f;
+	maxDistanceFromPlayer = 400.f;
 
 	lineOfSight = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("lineOfSight"));
 	lineOfSight->HearingThreshold = 0.f;

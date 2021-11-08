@@ -21,7 +21,9 @@ protected:
 	virtual void EntityDead() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float distanceFromPlayer;
+	float minDistanceFromPlayer;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float maxDistanceFromPlayer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UPawnSensingComponent* lineOfSight;
@@ -30,4 +32,6 @@ public:
 	AGladiatorEnemy();
 
 	virtual void Tick(float DeltaTime) override;
+
+	FORCEINLINE float GetDistanceFromPlayer(bool min) { return min ? minDistanceFromPlayer : maxDistanceFromPlayer; }
 };

@@ -1,6 +1,6 @@
 #include "MyBTDecorator_CheckAttack.h"
 
-#include "AIController.h"
+#include "EnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 #include "GladiatorEnemy.h"
@@ -12,7 +12,30 @@ UMyBTDecorator_CheckAttack::UMyBTDecorator_CheckAttack(const FObjectInitializer&
 
 bool UMyBTDecorator_CheckAttack::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const 
 {
-	const auto controller = OwnerComp.GetAIOwner();
+	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
+	
+	auto blackboard = controller->GetBlackboardComponent();
+	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-	return controller->GetBlackboardComponent()->GetValueAsBool(GetSelectedBlackboardKey());
+	if (blackboard->GetValueAsBool("attack"))
+		return false;
+
+	float curTimer = blackboard->GetValueAsFloat(GetSelectedBlackboardKey());
+	curTimer -= owner->GetWorld()->DeltaTimeSeconds;
+	blackboard->SetValueAsFloat(GetSelectedBlackboardKey(), curTimer);
+
+	if (curTimer <= 0.f)
+	{
+		// COMPUTE LOCATION
+		FVector location = blackboard->GetValueAsVector("attackLocation");
+		
+		FVector Direction = Cast<APawn>(blackboard->GetValueAsObject("player"))->GetActorLocation() - owner->GetActorLocation();
+		location = owner->GetActorLocation() + Direction;
+		blackboard->SetValueAsVector("attackLocation", location);
+
+		// SET TO PREPARE ATTACK
+		return true;
+	}
+
+	return false;
 }
