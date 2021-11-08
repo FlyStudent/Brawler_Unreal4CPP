@@ -11,6 +11,12 @@ class GLADIATORGAME_API AEnemyAIController : public AAIController
 
 private:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float maxDistanceFromPlayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		float minDistanceFromPlayer;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 		class UBehaviorTreeComponent* behaviorTreeComponent;
 
@@ -38,4 +44,6 @@ public:
 	virtual void OnPossess(APawn* const pawn) override;
 
 	FORCEINLINE class UBlackboardComponent* GetBlackboard() const { return blackboard; };
+	FORCEINLINE float GetMaxDistanceFromPlayer() const { return maxDistanceFromPlayer; }
+	FORCEINLINE float GetMinDistanceFromPlayer() const { return minDistanceFromPlayer; }
 };

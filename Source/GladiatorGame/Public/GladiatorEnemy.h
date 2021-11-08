@@ -21,10 +21,14 @@ protected:
 	virtual void EntityDead() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float distanceFromPlayer;
+	float minDistanceFromPlayer;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float maxDistanceFromPlayer;
 
 public:	
 	AGladiatorEnemy();
 
 	virtual void Tick(float DeltaTime) override;
+
+	FORCEINLINE float GetDistanceFromPlayer(bool min) { return min ? minDistanceFromPlayer : maxDistanceFromPlayer; }
 };

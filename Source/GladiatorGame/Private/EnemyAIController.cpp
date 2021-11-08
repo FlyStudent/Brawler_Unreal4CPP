@@ -18,6 +18,8 @@ AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializ
 	blackboard = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComponent"));
 
 	SetActorTickEnabled(true);
+
+	
 }
 
 void AEnemyAIController::BeginPlay()
@@ -28,6 +30,11 @@ void AEnemyAIController::BeginPlay()
 
 	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
 	ResetAttackTimer();
+
+	// Variable init From pawn
+	auto enemy = Cast<AGladiatorEnemy>(GetPawn());
+	minDistanceFromPlayer = enemy->GetDistanceFromPlayer(true);
+	maxDistanceFromPlayer = enemy->GetDistanceFromPlayer(false);
 }
 
 void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
@@ -44,6 +51,10 @@ void AEnemyAIController::ResetAttackTimer()
 
 void AEnemyAIController::MoveBackward()
 {	
+	// rescale Attack timer if under 1s
+	blackboard->SetValueAsFloat("attackTimer", FMath::Max(blackboard->GetValueAsFloat("attackTimer"), 1.f));
+
+
 	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
 	const FVector location = GetPawn()->GetActorLocation() + Direction;
 	MoveToLocation(location);

@@ -17,7 +17,8 @@ AGladiatorEnemy::AGladiatorEnemy()
 	life = 3;
 	damage = 1;
 
-	distanceFromPlayer = 300.f;
+	minDistanceFromPlayer = 300.f;
+	maxDistanceFromPlayer = 400.f;
 }
 
 void AGladiatorEnemy::BeginPlay()
