@@ -18,6 +18,7 @@ EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
+	controller->SetFocus(nullptr);
 	owner->Attack();
 	controller->ResetAttackTimer();
 

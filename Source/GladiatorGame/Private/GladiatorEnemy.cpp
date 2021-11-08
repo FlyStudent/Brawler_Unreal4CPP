@@ -4,6 +4,7 @@
 #include "GladiatorPlayer.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "Perception/PawnSensingComponent.h"
@@ -49,8 +50,17 @@ void AGladiatorEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (lineOfSight->UPawnSensingComponent::HasLineOfSightTo(player))
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("see player"));
+	//if (lineOfSight->UPawnSensingComponent::HasLineOfSightTo(player))
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("see player"));
+}
+
+void AGladiatorEnemy::StopAttack()
+{
+	Super::StopAttack();
+
+	//FRotator playerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), player->GetActorLocation());
+	//FRotator newRot = FMath::RInterpTo(GetActorRotation(), playerRot, GetWorld()->DeltaTimeSeconds, 5);
+	//SetActorRotation(newRot);
 }
 
 // Collisions

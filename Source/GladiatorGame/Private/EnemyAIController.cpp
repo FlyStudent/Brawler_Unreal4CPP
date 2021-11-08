@@ -54,11 +54,11 @@ void AEnemyAIController::MoveBackward()
 	// rescale Attack timer if under 1s
 	blackboard->SetValueAsFloat("attackTimer", FMath::Max(blackboard->GetValueAsFloat("attackTimer"), 1.f));
 
+	SetFocus(player);
 
 	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
 	const FVector location = GetPawn()->GetActorLocation() + Direction;
 	MoveToLocation(location);
-	SetFocus(player);
 }
 
 void AEnemyAIController::Tick(float deltaSeconds)

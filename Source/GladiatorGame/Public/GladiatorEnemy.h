@@ -20,6 +20,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EntityDead() override;
 
+	void StopAttack() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float minDistanceFromPlayer;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
