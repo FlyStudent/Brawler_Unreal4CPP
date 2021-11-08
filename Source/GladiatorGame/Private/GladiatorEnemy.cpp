@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -18,6 +19,14 @@ AGladiatorEnemy::AGladiatorEnemy()
 	damage = 1;
 
 	distanceFromPlayer = 300.f;
+
+	lineOfSight = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("lineOfSight"));
+	lineOfSight->HearingThreshold = 0.f;
+	lineOfSight->LOSHearingThreshold = 0.f;
+	lineOfSight->SightRadius = 250.f;
+	lineOfSight->SetPeripheralVisionAngle(25);
+	lineOfSight->bOnlySensePlayers = false;
+	lineOfSight->bHearNoises = false;
 }
 
 void AGladiatorEnemy::BeginPlay()
@@ -38,6 +47,9 @@ void AGladiatorEnemy::EntityDead()
 void AGladiatorEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (lineOfSight->UPawnSensingComponent::HasLineOfSightTo(player))
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("see player"));
 }
 
 // Collisions

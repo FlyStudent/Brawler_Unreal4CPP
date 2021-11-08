@@ -35,10 +35,10 @@ void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
 
 void AEnemyAIController::MoveBackward()
 {	
-	Cast<AGladiatorEnemy>(GetPawn())->bUseControllerRotationYaw = false;
 	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
-	const FVector location = GetPawn()->GetActorLocation() + Direction.Normalize();
+	const FVector location = GetPawn()->GetActorLocation() + Direction;
 	MoveToLocation(location);
+	SetFocus(player);
 }
 
 void AEnemyAIController::Tick(float deltaSeconds)
