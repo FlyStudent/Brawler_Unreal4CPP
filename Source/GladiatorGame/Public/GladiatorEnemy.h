@@ -12,7 +12,7 @@ class GLADIATORGAME_API AGladiatorEnemy : public AGladiatorEntity
 	GENERATED_BODY()
 
 private:
-	class AAIController* controller;
+	class AEnemyAIController* controller;
 	class AGladiatorPlayer* player;
 	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
@@ -27,13 +27,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxDistanceFromPlayer;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPawnSensingComponent* lineOfSight;
-
 public:	
 	AGladiatorEnemy();
 
 	virtual void Tick(float DeltaTime) override;
+
+	void SetBlackboardAttack(bool canAttack = true);
 
 	FORCEINLINE float GetDistanceFromPlayer(bool min) { return min ? minDistanceFromPlayer : maxDistanceFromPlayer; }
 };

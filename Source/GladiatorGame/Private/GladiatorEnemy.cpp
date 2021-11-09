@@ -3,6 +3,7 @@
 #include "EnemyAIController.h"
 #include "GladiatorPlayer.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
@@ -21,14 +22,6 @@ AGladiatorEnemy::AGladiatorEnemy()
 
 	minDistanceFromPlayer = 300.f;
 	maxDistanceFromPlayer = 400.f;
-
-	lineOfSight = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("lineOfSight"));
-	lineOfSight->HearingThreshold = 0.f;
-	lineOfSight->LOSHearingThreshold = 0.f;
-	lineOfSight->SightRadius = 250.f;
-	lineOfSight->SetPeripheralVisionAngle(25);
-	lineOfSight->bOnlySensePlayers = false;
-	lineOfSight->bHearNoises = false;
 }
 
 void AGladiatorEnemy::BeginPlay()
@@ -36,7 +29,7 @@ void AGladiatorEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	controller = Cast<AAIController>(GetController());
+	controller = Cast<AEnemyAIController>(GetController());
 	Cast<AEnemyAIController>(controller)->SetPlayer(player);
 }
 
@@ -49,18 +42,16 @@ void AGladiatorEnemy::EntityDead()
 void AGladiatorEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//if (lineOfSight->UPawnSensingComponent::HasLineOfSightTo(player))
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("see player"));
 }
 
 void AGladiatorEnemy::StopAttack()
 {
 	Super::StopAttack();
+}
 
-	//FRotator playerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), player->GetActorLocation());
-	//FRotator newRot = FMath::RInterpTo(GetActorRotation(), playerRot, GetWorld()->DeltaTimeSeconds, 5);
-	//SetActorRotation(newRot);
+void AGladiatorEnemy::SetBlackboardAttack(bool canAttack)
+{
+	controller->GetBlackboard()->SetValueAsBool("canAttack", canAttack);
 }
 
 // Collisions
