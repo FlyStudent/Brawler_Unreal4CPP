@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "GladiatorEntity.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHurtEvent);
+
 UCLASS()
 class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 {
@@ -32,6 +34,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
 
+
 	/// DEFAULT FUNC 
 	virtual void BeginPlay() override;
 
@@ -49,12 +52,16 @@ protected:
 	class USphereComponent* defenseCollider;
 
 	UFUNCTION()
-		virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void Invincibility();
+	UFUNCTION()
 	void StopInvincibility();
 	virtual void StopAttack();
 
 	virtual void EntityDead();
+	
 
 public:	
 
@@ -62,6 +69,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	// Delegate
+	UPROPERTY(BlueprintAssignable, Category = "Delegate")
+		FHurtEvent hurtEvent;
+
+	UFUNCTION()
+	void BroadcastHurtEvent();
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Attack();

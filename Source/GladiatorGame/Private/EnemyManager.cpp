@@ -18,7 +18,12 @@ void AEnemyManager::BeginPlay()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGladiatorEnemy::StaticClass(), actorArray);
 
 	for (AActor* actor : actorArray)
-		enemyArray.Add(Cast<AGladiatorEnemy>(actor));
+	{
+		auto enemy = Cast<AGladiatorEnemy>(actor);
+		enemyArray.Add(enemy);
+		enemy->hurtEvent.AddDynamic(this, &AEnemyManager::CheckEnemyState);
+
+	}
 
 	ResetAttackTimer();
 }
@@ -38,4 +43,22 @@ void AEnemyManager::ResetAttackTimer()
 {
 	GetWorldTimerManager().ClearTimer(attackTimer);
 	GetWorldTimerManager().SetTimer(attackTimer, this, &AEnemyManager::ChooseAttackingEnemy, 1.0f, true, FMath::RandRange(1.f, maxTime));
+}
+
+void AEnemyManager::CheckEnemyState()
+{
+	bool alive = false;
+	for (int i = enemyArray.Num() - 1; i > 0; i--)
+	{
+		if (enemyArray[i]->GetLife() <= 0)
+			enemyArray.RemoveAt(i);
+	}
+
+	if (enemyArray.Num() == 0)
+		BroadcastEnemyKilledEvent();
+}
+
+void AEnemyManager::BroadcastEnemyKilledEvent()
+{
+	enemyKilledEvent.Broadcast();
 }

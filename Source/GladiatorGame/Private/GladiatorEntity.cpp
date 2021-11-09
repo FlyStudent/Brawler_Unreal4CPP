@@ -31,7 +31,6 @@ AGladiatorEntity::AGladiatorEntity()
 	defenseCollider->SetupAttachment(shieldMesh);
 	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
 	defenseCollider->SetSphereRadius(50.f);
-
 }
 
 void AGladiatorEntity::BeginPlay()
@@ -42,6 +41,8 @@ void AGladiatorEntity::BeginPlay()
 	defenseCollider->Deactivate();
 
 	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
+
+	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 }
 
 void AGladiatorEntity::EntityDead() 
@@ -82,6 +83,13 @@ void AGladiatorEntity::StopAttack()
 	GetWorldTimerManager().ClearTimer(attackTimer);
 }
 
+void AGladiatorEntity::Invincibility()
+{
+	invincibility = true;
+	GetWorldTimerManager().ClearTimer(invincibilityTimer);
+	GetWorldTimerManager().SetTimer(invincibilityTimer, this, &AGladiatorEntity::StopInvincibility, 1.0f, true, invincibilityTimerTime);
+}
+
 void AGladiatorEntity::StopInvincibility()
 {
 	invincibility = false;
@@ -95,16 +103,16 @@ void AGladiatorEntity::Heal(int heal)
 void AGladiatorEntity::Hurt(int dmg)
 {
 	if (!invincibility) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Get hurt"));
 		life = FMath::Max(life - dmg, 0);
 
-		invincibility = true;
-		GetWorldTimerManager().ClearTimer(invincibilityTimer);
-		GetWorldTimerManager().SetTimer(invincibilityTimer, this, &AGladiatorEntity::StopInvincibility, 1.0f, true, invincibilityTimerTime);
+		BroadcastHurtEvent();
 	}
-
 }
 
+void AGladiatorEntity::BroadcastHurtEvent()
+{
+	hurtEvent.Broadcast();
+}
 // COLLISIONS
 
 void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

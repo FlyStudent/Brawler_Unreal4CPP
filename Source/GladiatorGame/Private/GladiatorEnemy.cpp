@@ -36,7 +36,9 @@ void AGladiatorEnemy::BeginPlay()
 void AGladiatorEnemy::EntityDead()
 {
 	Super::EntityDead();
-	Destroy();
+	GetMesh()->SetSimulatePhysics(true);
+	GetCharacterMovement()->DisableMovement();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AGladiatorEnemy::Tick(float DeltaTime)

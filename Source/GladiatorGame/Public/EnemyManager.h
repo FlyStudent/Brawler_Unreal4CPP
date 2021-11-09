@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "EnemyManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyKilledEvent);
+
 UCLASS()
 class GLADIATORGAME_API AEnemyManager : public AActor
 {
@@ -12,17 +14,27 @@ class GLADIATORGAME_API AEnemyManager : public AActor
 private:
 	TArray<class AGladiatorEnemy*> enemyArray;
 
-	virtual void BeginPlay() override;
-	void ChooseAttackingEnemy();
-	void ResetAttackTimer();
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float maxTime;
 
 	FTimerHandle attackTimer;
 
+
+	virtual void BeginPlay() override;
+	void ChooseAttackingEnemy();
+	void ResetAttackTimer();
+
+	UFUNCTION()
+	void CheckEnemyState();
+
 public:	
 	AEnemyManager();
+
+	// Delegate
+	UPROPERTY(BlueprintAssignable, Category = "Delegate")
+		FEnemyKilledEvent enemyKilledEvent;
+	UFUNCTION()
+	void BroadcastEnemyKilledEvent();
 
 	virtual void Tick(float DeltaTime) override;
 };
