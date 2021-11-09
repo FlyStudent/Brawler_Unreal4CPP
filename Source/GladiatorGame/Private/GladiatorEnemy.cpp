@@ -21,14 +21,6 @@ AGladiatorEnemy::AGladiatorEnemy()
 
 	minDistanceFromPlayer = 300.f;
 	maxDistanceFromPlayer = 400.f;
-
-	lineOfSight = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("lineOfSight"));
-	lineOfSight->HearingThreshold = 0.f;
-	lineOfSight->LOSHearingThreshold = 0.f;
-	lineOfSight->SightRadius = 250.f;
-	lineOfSight->SetPeripheralVisionAngle(25);
-	lineOfSight->bOnlySensePlayers = false;
-	lineOfSight->bHearNoises = false;
 }
 
 void AGladiatorEnemy::BeginPlay()

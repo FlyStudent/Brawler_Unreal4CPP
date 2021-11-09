@@ -80,7 +80,6 @@ void AGladiatorEntity::StopAttack()
 	attack = false;
 	attackCollider->Deactivate();
 	GetWorldTimerManager().ClearTimer(attackTimer);
-	GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Blue, TEXT("Stop Attack"));
 }
 
 void AGladiatorEntity::StopInvincibility()

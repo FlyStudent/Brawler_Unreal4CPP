@@ -27,9 +27,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxDistanceFromPlayer;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UPawnSensingComponent* lineOfSight;
-
 public:	
 	AGladiatorEnemy();
 

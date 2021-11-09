@@ -38,6 +38,7 @@ public:
 	void ResetAttackTimer();
 
 	void MoveBackward();
+	void MoveOnSide();
 
 	void Tick(float deltaSeconds) override;
 
