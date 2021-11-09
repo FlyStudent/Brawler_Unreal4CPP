@@ -69,10 +69,9 @@ void AEnemyAIController::MoveOnSide()
 	SetFocus(player);
 
 	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
-	const FVector location = GetPawn()->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
-	MoveToLocation(location);
+	FVector location = GetPawn()->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Move on side"));
+	MoveToLocation(location);
 }
 
 void AEnemyAIController::Tick(float deltaSeconds)

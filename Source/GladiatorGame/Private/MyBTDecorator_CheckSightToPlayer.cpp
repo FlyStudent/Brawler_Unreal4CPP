@@ -2,6 +2,7 @@
 
 #include "EnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
 
 #include "GladiatorEnemy.h"
 #include "GladiatorPlayer.h"
@@ -28,8 +29,20 @@ bool UMyBTDecorator_CheckSightToPlayer::CalculateRawConditionValue(UBehaviorTree
 	traceParams.bReturnPhysicalMaterial = false;
 	FHitResult hit;
 
-	owner->GetWorld()->LineTraceSingleByChannel(hit, FVector::ZeroVector, Cast<APawn>(blackboard->GetValueAsObject(GetSelectedBlackboardKey()))->GetActorLocation(), ECollisionChannel::ECC_EngineTraceChannel1);
-	bool sightTo = Cast<AGladiatorPlayer>(hit.Actor) ? true : false;
+	// Compute sight line
+	FVector start, end;
+	start = owner->GetActorLocation();
+	end = Cast<AGladiatorPlayer>(blackboard->GetValueAsObject(GetSelectedBlackboardKey()))->GetActorLocation();
+	start = start + (end - start).GetClampedToSize(75.f, 75.f);
+	// Trace line
+	owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_Pawn);
+
+	//DrawDebugLine(owner->GetWorld(), start, end, FColor::Red, true, -1.f, 1, 5.f);
+
+	AGladiatorPlayer* entity = Cast<AGladiatorPlayer>(hit.GetActor());
+	bool sightTo = false;
+	if (entity)
+		sightTo = true;
 #else //Sight to
 	bool sightTo = controller->LineOfSightTo(Cast<APawn>(blackboard->GetValueAsObject(GetSelectedBlackboardKey())), (FVector)(ForceInit), true);
 #endif
