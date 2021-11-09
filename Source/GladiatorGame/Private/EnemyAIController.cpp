@@ -61,6 +61,20 @@ void AEnemyAIController::MoveBackward()
 	MoveToLocation(location);
 }
 
+void AEnemyAIController::MoveOnSide() 
+{
+	// rescale Attack timer if under 1s
+	blackboard->SetValueAsFloat("attackTimer", FMath::Max(blackboard->GetValueAsFloat("attackTimer"), 1.f));
+
+	SetFocus(player);
+
+	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
+	const FVector location = GetPawn()->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
+	MoveToLocation(location);
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Move on side"));
+}
+
 void AEnemyAIController::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
