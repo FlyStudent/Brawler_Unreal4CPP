@@ -55,9 +55,7 @@ void AGladiatorEntity::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (!IsAlive())
-	{
 		EntityDead();
-	}
 }
 
 void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -113,6 +111,7 @@ void AGladiatorEntity::BroadcastHurtEvent()
 {
 	hurtEvent.Broadcast();
 }
+
 // COLLISIONS
 
 void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

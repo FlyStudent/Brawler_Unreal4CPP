@@ -22,7 +22,6 @@ void AEnemyManager::BeginPlay()
 		auto enemy = Cast<AGladiatorEnemy>(actor);
 		enemyArray.Add(enemy);
 		enemy->hurtEvent.AddDynamic(this, &AEnemyManager::CheckEnemyState);
-
 	}
 
 	ResetAttackTimer();
