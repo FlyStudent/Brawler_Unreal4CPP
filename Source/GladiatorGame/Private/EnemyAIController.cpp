@@ -18,8 +18,6 @@ AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializ
 	blackboard = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComponent"));
 
 	SetActorTickEnabled(true);
-
-	
 }
 
 void AEnemyAIController::BeginPlay()
@@ -29,7 +27,6 @@ void AEnemyAIController::BeginPlay()
 	behaviorTreeComponent->StartTree(*bTree);
 
 	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
-	ResetAttackTimer();
 
 	// Variable init From pawn
 	auto enemy = Cast<AGladiatorEnemy>(GetPawn());
@@ -42,12 +39,6 @@ void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
 	player = p;
 	blackboard->SetValueAsObject("player", player);
 }
-
-void AEnemyAIController::ResetAttackTimer()
-{
-	blackboard->SetValueAsFloat("attackTimer", FMath::RandRange(2.f, 6.f));
-}
-
 
 void AEnemyAIController::MoveBackward()
 {	

@@ -17,14 +17,7 @@ bool UMyBTDecorator_CheckAttack::CalculateRawConditionValue(UBehaviorTreeCompone
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-	if (blackboard->GetValueAsBool("attack"))
-		return false;
-
-	float curTimer = blackboard->GetValueAsFloat(GetSelectedBlackboardKey());
-	curTimer -= owner->GetWorld()->DeltaTimeSeconds;
-	blackboard->SetValueAsFloat(GetSelectedBlackboardKey(), curTimer);
-
-	if (curTimer <= 0.f)
+	if (blackboard->GetValueAsBool("canAttack") && !blackboard->GetValueAsBool("attack"))
 	{
 		// COMPUTE LOCATION
 		FVector location = blackboard->GetValueAsVector("attackLocation");

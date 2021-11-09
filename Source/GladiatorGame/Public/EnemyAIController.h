@@ -27,6 +27,7 @@ private:
 	class AGladiatorPlayer* player;
 
 public:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 		bool prepareAttack;
 
@@ -35,7 +36,6 @@ public:
 	void BeginPlay() override;
 	
 	void SetPlayer(class AGladiatorPlayer* player);
-	void ResetAttackTimer();
 
 	void MoveBackward();
 	void MoveOnSide();
