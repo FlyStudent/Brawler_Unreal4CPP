@@ -50,7 +50,7 @@ void AEnemyManager::CheckEnemyState()
 	bool alive = false;
 	for (int i = enemyArray.Num() - 1; i > 0; i--)
 	{
-		if (enemyArray[i]->GetLife() <= 0)
+		if (!enemyArray[i]->IsAlive())
 			enemyArray.RemoveAt(i);
 	}
 

@@ -41,8 +41,16 @@ void AGladiatorEntity::BeginPlay()
 	defenseCollider->Deactivate();
 
 	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
+	defenseCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnShieldBeginOverlap);
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
+	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
+}
+
+void AGladiatorEntity::CheckIsAlive()
+{
+	if (!IsAlive())
+		EntityDead();
 }
 
 void AGladiatorEntity::EntityDead() 
@@ -53,11 +61,6 @@ void AGladiatorEntity::EntityDead()
 void AGladiatorEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (!IsAlive())
-	{
-		EntityDead();
-	}
 }
 
 void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -78,9 +81,15 @@ void AGladiatorEntity::Attack()
 
 void AGladiatorEntity::StopAttack()
 {
-	attack = false;
+	attack = attackBlocked = false;
 	attackCollider->Deactivate();
 	GetWorldTimerManager().ClearTimer(attackTimer);
+}
+
+void AGladiatorEntity::AttackBlocked()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Defense !"));
+	attackBlocked = true;
 }
 
 void AGladiatorEntity::Invincibility()
@@ -119,7 +128,27 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 											 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (attackCollider->IsActive())
+	if (!attackBlocked && attackCollider->IsActive())
 	{
+		auto entity = Cast<AGladiatorEntity>(OtherActor);
+
+		if (entity && entity != this)
+			entity->Hurt(damage);
+	}
+}
+
+void AGladiatorEntity::OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (defenseCollider->IsActive())
+	{
+
+		auto entity = Cast<AGladiatorEntity>(OtherActor);
+
+		if (entity)
+		{
+			entity->AttackBlocked();
+		}
 	}
 }

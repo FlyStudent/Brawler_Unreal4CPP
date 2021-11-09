@@ -30,6 +30,8 @@ protected:
 	bool attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	int damage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
+	bool attackBlocked;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
@@ -53,12 +55,17 @@ protected:
 
 	UFUNCTION()
 	virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void Invincibility();
 	UFUNCTION()
 	void StopInvincibility();
 	virtual void StopAttack();
+
+	UFUNCTION()
+	void CheckIsAlive();
 
 	virtual void EntityDead();
 	
@@ -79,6 +86,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Attack();
+	UFUNCTION()
+		void AttackBlocked();
 
 	UFUNCTION(BlueprintCallable)
 		virtual void Heal(int heal);
