@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
 AGladiatorEntity::AGladiatorEntity()
 {
@@ -42,8 +44,16 @@ void AGladiatorEntity::BeginPlay()
 	defenseCollider->Deactivate();
 
 	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
+	defenseCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnShieldBeginOverlap);
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
+	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
+}
+
+void AGladiatorEntity::CheckIsAlive()
+{
+	if (!IsAlive())
+		EntityDead();
 }
 
 void AGladiatorEntity::EntityDead() 
@@ -55,9 +65,6 @@ void AGladiatorEntity::EntityDead()
 void AGladiatorEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (!IsAlive())
-		EntityDead();
 }
 
 void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -67,20 +74,27 @@ void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AGladiatorEntity::Attack()
 {
-	if (!attack)
-	{
-		attack = true;
-		attackCollider->Activate();
-		GetWorldTimerManager().ClearTimer(attackTimer);
-		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorEntity::StopAttack, 1.0f, true, attackTimerTime);
-	}
+	attack = true;
 }
 
 void AGladiatorEntity::StopAttack()
 {
-	attack = false;
+	attack = attackBlocked = false;
+}
+
+void AGladiatorEntity::AttackBlocked()
+{
+	attackBlocked = true;
+}
+
+void AGladiatorEntity::BeginDamage()
+{
+	attackCollider->Activate();
+}
+
+void AGladiatorEntity::StopDamage()
+{
 	attackCollider->Deactivate();
-	GetWorldTimerManager().ClearTimer(attackTimer);
 }
 
 void AGladiatorEntity::Invincibility()
@@ -122,7 +136,27 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 											 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (attackCollider->IsActive())
+	if (!attackBlocked && attackCollider->IsActive())
 	{
+		auto entity = Cast<AGladiatorEntity>(OtherActor);
+
+		if (entity && entity != this)
+			entity->Hurt(damage);
+	}
+}
+
+void AGladiatorEntity::OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+	bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (defenseCollider->IsActive())
+	{
+
+		auto entity = Cast<AGladiatorEntity>(OtherActor);
+
+		if (entity)
+		{
+			entity->AttackBlocked();
+		}
 	}
 }

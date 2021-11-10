@@ -15,11 +15,9 @@ bool UMyBTDecorator_CheckDistance::CalculateRawConditionValue(UBehaviorTreeCompo
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
 
 	auto blackboard = controller->GetBlackboardComponent();
-	//auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-    float distanceFromPlayer = blackboard->GetValueAsFloat(GetSelectedBlackboardKey());
-	bool attack = blackboard->GetValueAsBool("attack");
+    float distanceFromPlayer = blackboard->GetValueAsFloat("distanceFromPlayer");
 
-	return !attack && distanceFromPlayer > controller->GetMaxDistanceFromPlayer();
+	return distanceFromPlayer > blackboard->GetValueAsFloat(GetSelectedBlackboardKey());
 }
 

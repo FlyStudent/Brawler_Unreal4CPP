@@ -23,13 +23,12 @@ protected:
 	bool invincibility;
 
 	/// ATTACK & SHIELD
-	FTimerHandle attackTimer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
-	float attackTimerTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 	bool attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	int damage;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
+	bool attackBlocked;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
@@ -53,12 +52,24 @@ protected:
 
 	UFUNCTION()
 	virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void Invincibility();
 	UFUNCTION()
 	void StopInvincibility();
+	
+	UFUNCTION(BlueprintCallable)
+	void BeginDamage();
+	UFUNCTION(BlueprintCallable)
+	void StopDamage();
+
+	UFUNCTION(BlueprintCallable)
 	virtual void StopAttack();
+
+	UFUNCTION()
+	void CheckIsAlive();
 
 	virtual void EntityDead();
 	
@@ -78,7 +89,9 @@ public:
 	void BroadcastHurtEvent();
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Attack();
+		virtual void Attack();
+	UFUNCTION()
+		void AttackBlocked();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Heal(int heal);
@@ -89,7 +102,6 @@ public:
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
-
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const { return life > 0; }
 };

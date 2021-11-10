@@ -48,7 +48,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 ///// ADDITIONAL VARIABLE
 
 	// Attack
-	attackTimerTime = 0.3f;
 	invincibilityTimerTime = 2.f;
 
 	// Life
@@ -59,6 +58,13 @@ AGladiatorPlayer::AGladiatorPlayer()
 void AGladiatorPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AGladiatorPlayer::EntityDead()
+{
+	Super::EntityDead();
+
+	DisableInput(Cast<APlayerController>(GetController()));
 }
 
 // Called every frame
@@ -135,19 +141,4 @@ void AGladiatorPlayer::StopShield()
 {
 	usingShield = false;
 	defenseCollider->Deactivate();
-}
-
-// Collisions
-
-void AGladiatorPlayer::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-											 bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (attackCollider->IsActive())
-	{
-		auto enemy = Cast<AGladiatorEnemy>(OtherActor);
-
-		if (enemy)
-			enemy->Hurt(damage);
-	}
 }

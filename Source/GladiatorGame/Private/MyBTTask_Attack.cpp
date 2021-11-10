@@ -20,7 +20,6 @@ EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	controller->SetFocus(nullptr);
 	owner->Attack();
-	owner->SetBlackboardAttack(false);
 
 	return EBTNodeResult::Succeeded;
 }
