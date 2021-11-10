@@ -60,6 +60,13 @@ void AGladiatorPlayer::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AGladiatorPlayer::EntityDead()
+{
+	Super::EntityDead();
+
+	DisableInput(Cast<APlayerController>(GetController()));
+}
+
 // Called every frame
 void AGladiatorPlayer::Tick(float DeltaTime)
 {

@@ -35,9 +35,10 @@ void AGladiatorEnemy::BeginPlay()
 void AGladiatorEnemy::EntityDead()
 {
 	Super::EntityDead();
-	GetMesh()->SetSimulatePhysics(true);
-	GetCharacterMovement()->DisableMovement();
+
+	//GetMesh()->SetSimulatePhysics(true);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	controller->ClearFocus(EAIFocusPriority::Default);
 }
 
 void AGladiatorEnemy::Tick(float DeltaTime)

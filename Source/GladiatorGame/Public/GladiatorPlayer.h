@@ -29,6 +29,8 @@ private:
 private:
 	virtual void BeginPlay() override;
 
+	void EntityDead() override;
+
 public:	
 	AGladiatorPlayer();
 

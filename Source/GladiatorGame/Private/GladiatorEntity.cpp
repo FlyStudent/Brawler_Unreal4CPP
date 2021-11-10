@@ -4,6 +4,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
 AGladiatorEntity::AGladiatorEntity()
 {
@@ -55,7 +57,7 @@ void AGladiatorEntity::CheckIsAlive()
 
 void AGladiatorEntity::EntityDead() 
 {
-	
+	GetCharacterMovement()->DisableMovement();
 }
 
 void AGladiatorEntity::Tick(float DeltaTime)

@@ -102,5 +102,6 @@ public:
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
-	FORCEINLINE int IsAlive() const { return life > 0; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsAlive() const { return life > 0; }
 };

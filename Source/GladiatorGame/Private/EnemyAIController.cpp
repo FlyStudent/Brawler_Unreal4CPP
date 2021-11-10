@@ -23,15 +23,16 @@ AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializ
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	RunBehaviorTree(bTree);
-	behaviorTreeComponent->StartTree(*bTree);
-
-	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
 
 	// Variable init From pawn
 	auto enemy = Cast<AGladiatorEnemy>(GetPawn());
-	minDistanceFromPlayer = enemy->GetDistanceFromPlayer(true);
-	maxDistanceFromPlayer = enemy->GetDistanceFromPlayer(false);
+
+	// Behavior tree
+	RunBehaviorTree(bTree);
+	behaviorTreeComponent->StartTree(*bTree);
+	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
+	blackboard->SetValueAsFloat("minDistanceFromPlayer", enemy->GetDistanceFromPlayer(true));
+	blackboard->SetValueAsFloat("maxDistanceFromPlayer", enemy->GetDistanceFromPlayer(false));
 }
 
 void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
@@ -71,7 +72,10 @@ void AEnemyAIController::Tick(float deltaSeconds)
 
 	auto owner = Cast<AGladiatorEnemy>(GetPawn());
 	if (owner)
+	{
 		blackboard->SetValueAsInt("life", owner->GetLife());
+		blackboard->SetValueAsBool("alive", owner->IsAlive());
+	}
 }
 
 void AEnemyAIController::OnPossess(APawn* const pawn) 
