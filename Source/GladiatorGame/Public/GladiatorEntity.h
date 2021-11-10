@@ -23,9 +23,6 @@ protected:
 	bool invincibility;
 
 	/// ATTACK & SHIELD
-	FTimerHandle attackTimer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
-	float attackTimerTime;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 	bool attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
@@ -62,6 +59,13 @@ protected:
 	void Invincibility();
 	UFUNCTION()
 	void StopInvincibility();
+	
+	UFUNCTION(BlueprintCallable)
+	void BeginDamage();
+	UFUNCTION(BlueprintCallable)
+	void StopDamage();
+
+	UFUNCTION(BlueprintCallable)
 	virtual void StopAttack();
 
 	UFUNCTION()

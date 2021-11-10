@@ -70,25 +70,27 @@ void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AGladiatorEntity::Attack()
 {
-	if (!attack)
-	{
-		attack = true;
-		attackCollider->Activate();
-		GetWorldTimerManager().ClearTimer(attackTimer);
-		GetWorldTimerManager().SetTimer(attackTimer, this, &AGladiatorEntity::StopAttack, 1.0f, true, attackTimerTime);
-	}
+	attack = true;
 }
 
 void AGladiatorEntity::StopAttack()
 {
 	attack = attackBlocked = false;
-	attackCollider->Deactivate();
-	GetWorldTimerManager().ClearTimer(attackTimer);
 }
 
 void AGladiatorEntity::AttackBlocked()
 {
 	attackBlocked = true;
+}
+
+void AGladiatorEntity::BeginDamage()
+{
+	attackCollider->Activate();
+}
+
+void AGladiatorEntity::StopDamage()
+{
+	attackCollider->Deactivate();
 }
 
 void AGladiatorEntity::Invincibility()

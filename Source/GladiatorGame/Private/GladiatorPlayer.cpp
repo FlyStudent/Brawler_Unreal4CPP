@@ -48,7 +48,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 ///// ADDITIONAL VARIABLE
 
 	// Attack
-	attackTimerTime = 0.3f;
 	invincibilityTimerTime = 2.f;
 
 	// Life
