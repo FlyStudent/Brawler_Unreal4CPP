@@ -34,8 +34,11 @@ void AEnemyManager::Tick(float DeltaTime)
 
 void AEnemyManager::ChooseAttackingEnemy()
 {
-	enemyArray[FMath::RandRange(0, enemyArray.Num() - 1)]->SetBlackboardAttack();
-	ResetAttackTimer();
+	if (enemyArray.Num() != 0)
+	{
+		enemyArray[FMath::RandRange(0, enemyArray.Num() - 1)]->SetBlackboardAttack();
+		ResetAttackTimer();
+	}
 }
 
 void AEnemyManager::ResetAttackTimer()

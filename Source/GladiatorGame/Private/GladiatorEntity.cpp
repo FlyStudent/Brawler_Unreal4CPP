@@ -140,7 +140,7 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 	{
 		auto entity = Cast<AGladiatorEntity>(OtherActor);
 
-		if (entity && entity != this)
+		if (entity && entity->IsAlive() && entity != this)
 			entity->Hurt(damage);
 	}
 }

@@ -17,7 +17,7 @@ AEnemyAIController::AEnemyAIController(FObjectInitializer const& ObjectInitializ
 	behaviorTreeComponent = ObjectInitializer.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("bTreeComponent"));
 	blackboard = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComponent"));
 
-	SetActorTickEnabled(true);
+	SetActorTickEnabled(false);
 }
 
 void AEnemyAIController::BeginPlay()
@@ -25,14 +25,15 @@ void AEnemyAIController::BeginPlay()
 	Super::BeginPlay();
 
 	// Variable init From pawn
-	auto enemy = Cast<AGladiatorEnemy>(GetPawn());
+	owner = Cast<AGladiatorEnemy>(GetPawn());
 
 	// Behavior tree
 	RunBehaviorTree(bTree);
 	behaviorTreeComponent->StartTree(*bTree);
 	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
-	blackboard->SetValueAsFloat("minDistanceFromPlayer", enemy->GetDistanceFromPlayer(true));
-	blackboard->SetValueAsFloat("maxDistanceFromPlayer", enemy->GetDistanceFromPlayer(false));
+	blackboard->SetValueAsFloat("minDistanceFromPlayer", owner->GetDistanceFromPlayer(true));
+	blackboard->SetValueAsFloat("maxDistanceFromPlayer", owner->GetDistanceFromPlayer(false));
+	blackboard->SetValueAsBool("alive", true);
 }
 
 void AEnemyAIController::SetPlayer(class AGladiatorPlayer* p)
@@ -46,10 +47,12 @@ void AEnemyAIController::MoveBackward()
 	// rescale Attack timer if under 1s
 	blackboard->SetValueAsFloat("attackTimer", FMath::Max(blackboard->GetValueAsFloat("attackTimer"), 1.f));
 
-	SetFocus(player);
+	if (owner->IsAlive())
+		SetFocus(player);
 
-	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
-	const FVector location = GetPawn()->GetActorLocation() + Direction;
+
+	FVector Direction = owner->GetActorLocation() - player->GetActorLocation();
+	const FVector location = owner->GetActorLocation() + Direction;
 	MoveToLocation(location);
 }
 
@@ -60,22 +63,10 @@ void AEnemyAIController::MoveOnSide()
 
 	SetFocus(player);
 
-	FVector Direction = GetPawn()->GetActorLocation() - player->GetActorLocation();
-	FVector location = GetPawn()->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
+	FVector Direction = owner->GetActorLocation() - player->GetActorLocation();
+	FVector location = owner->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
 
 	MoveToLocation(location);
-}
-
-void AEnemyAIController::Tick(float deltaSeconds)
-{
-	Super::Tick(deltaSeconds);
-
-	auto owner = Cast<AGladiatorEnemy>(GetPawn());
-	if (owner)
-	{
-		blackboard->SetValueAsInt("life", owner->GetLife());
-		blackboard->SetValueAsBool("alive", owner->IsAlive());
-	}
 }
 
 void AEnemyAIController::OnPossess(APawn* const pawn) 

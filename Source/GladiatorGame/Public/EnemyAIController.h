@@ -19,6 +19,7 @@ private:
 
 	class UBlackboardComponent* blackboard;
 	class AGladiatorPlayer* player;
+	class AGladiatorEnemy* owner;
 
 public:
 
@@ -33,8 +34,6 @@ public:
 
 	void MoveBackward();
 	void MoveOnSide();
-
-	void Tick(float deltaSeconds) override;
 
 	virtual void OnPossess(APawn* const pawn) override;
 

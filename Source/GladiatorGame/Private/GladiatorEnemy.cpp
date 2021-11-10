@@ -36,9 +36,8 @@ void AGladiatorEnemy::EntityDead()
 {
 	Super::EntityDead();
 
-	controller->SetFocus(this);
+	controller->SetFocus(nullptr);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//controller->ClearFocus(EAIFocusPriority::Default);
 }
 
 void AGladiatorEnemy::Tick(float DeltaTime)
