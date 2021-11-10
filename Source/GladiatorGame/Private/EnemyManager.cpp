@@ -22,7 +22,6 @@ void AEnemyManager::BeginPlay()
 		auto enemy = Cast<AGladiatorEnemy>(actor);
 		enemyArray.Add(enemy);
 		enemy->hurtEvent.AddDynamic(this, &AEnemyManager::CheckEnemyState);
-
 	}
 
 	ResetAttackTimer();
@@ -48,12 +47,13 @@ void AEnemyManager::ResetAttackTimer()
 void AEnemyManager::CheckEnemyState()
 {
 	bool alive = false;
-	for (int i = enemyArray.Num() - 1; i > 0; i--)
+	for (int i = enemyArray.Num() - 1; i >= 0; i--)
 	{
 		if (!enemyArray[i]->IsAlive())
 			enemyArray.RemoveAt(i);
 	}
 
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("pingas"));
 	if (enemyArray.Num() == 0)
 		BroadcastEnemyKilledEvent();
 }

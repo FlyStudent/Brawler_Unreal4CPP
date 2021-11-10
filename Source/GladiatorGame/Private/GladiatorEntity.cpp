@@ -88,7 +88,6 @@ void AGladiatorEntity::StopAttack()
 
 void AGladiatorEntity::AttackBlocked()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Defense !"));
 	attackBlocked = true;
 }
 
