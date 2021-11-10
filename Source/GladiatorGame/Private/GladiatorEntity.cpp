@@ -84,6 +84,7 @@ void AGladiatorEntity::StopAttack()
 void AGladiatorEntity::Invincibility()
 {
 	invincibility = true;
+	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 1.f);
 	GetWorldTimerManager().ClearTimer(invincibilityTimer);
 	GetWorldTimerManager().SetTimer(invincibilityTimer, this, &AGladiatorEntity::StopInvincibility, 1.0f, true, invincibilityTimerTime);
 }
@@ -91,6 +92,7 @@ void AGladiatorEntity::Invincibility()
 void AGladiatorEntity::StopInvincibility()
 {
 	invincibility = false;
+	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 0.f);
 }
 
 void AGladiatorEntity::Heal(int heal)
