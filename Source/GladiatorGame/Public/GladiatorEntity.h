@@ -72,22 +72,24 @@ public:
 
 	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FHurtEvent hurtEvent;
+	FHurtEvent hurtEvent;
 
 	UFUNCTION()
 	void BroadcastHurtEvent();
 
 	UFUNCTION(BlueprintCallable)
-		virtual void Attack();
+	virtual void Attack();
 
 	UFUNCTION(BlueprintCallable)
-		virtual void Heal(int heal);
+	virtual void Heal(int heal);
 	UFUNCTION(BlueprintCallable)
-		virtual void Hurt(int dmg);
+	virtual void Hurt(int dmg);
 
 	FORCEINLINE bool CanMove() const { return !attack && !usingShield; }
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
-	FORCEINLINE int IsAlive() const { return life > 0; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsAlive() const { return life > 0; }
 };

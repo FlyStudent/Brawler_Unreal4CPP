@@ -36,8 +36,8 @@ void AGladiatorEnemy::BeginPlay()
 void AGladiatorEnemy::EntityDead()
 {
 	Super::EntityDead();
-	GetMesh()->SetSimulatePhysics(true);
-	GetCharacterMovement()->DisableMovement();
+
+	controller->SetFocus(this);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
