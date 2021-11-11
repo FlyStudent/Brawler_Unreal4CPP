@@ -29,8 +29,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -49,6 +47,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 	// Attack
 	invincibilityTimerTime = 2.f;
+	pressedTimeForLock = 0.2f;
 
 	// Life
 	life = 5;
@@ -71,6 +70,7 @@ void AGladiatorPlayer::EntityDead()
 void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 }
 
 void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -86,10 +86,13 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("TurnRate", this, &AGladiatorPlayer::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGladiatorPlayer::LookUpAtRate);
-
+	PlayerInputComponent->BindAxis("ChangeTarget", this, &AGladiatorPlayer::ChangeTarget);
+	
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
+	PlayerInputComponent->BindAction("ChangeTargetAction", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::PressedChange);
+	PlayerInputComponent->BindAction("ChangeTargetAction", EInputEvent::IE_Released, this, &AGladiatorPlayer::ReleasedChange);
 }
 
 void AGladiatorPlayer::TurnAtRate(float Rate)
@@ -128,8 +131,62 @@ void AGladiatorPlayer::MoveRight(float Value)
 	}
 }
 
+void AGladiatorPlayer::Lock()
+{
+	if (!isLocking)
+	{
+		currentLockEnemy = 0;
+		BroadcastLockEvent();
+	}
+	else
+	{
+		CameraBoom->bUsePawnControlRotation = true;
+		BroadcastUnlockEvent();
+	}
+
+	isLocking = isLocking ? false : true;
+}
+
+void AGladiatorPlayer::LockOnEnemy()
+{
+	CameraBoom->bUsePawnControlRotation = false;
+}
+
+void AGladiatorPlayer::ChangeTarget(float Value)
+{
+	if ( !isLocking || isChangingTarget || !isChangingTargetPressed || ennemiesTransform.Num() == 0 )
+		return;
+
+	isChangingTarget = true;
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::FromInt(currentLockEnemy));
+	if (Value > 0.f)
+		currentLockEnemy = currentLockEnemy == ennemiesTransform.Num() -1 ? 0 : currentLockEnemy + 1;
+	else
+		currentLockEnemy = currentLockEnemy == 0 ? ennemiesTransform.Num() - 1 : currentLockEnemy - 1;
+
+	FTimerHandle timer;
+	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::ReleasedChange, 1.f, false, 0.2f);
+}
+
+void AGladiatorPlayer::PressedChange()
+{
+	isChangingTargetPressed = true;
+}
+
+void AGladiatorPlayer::FreeChangeTarget()
+{
+	isChangingTarget = false;
+}
+
+void AGladiatorPlayer::ReleasedChange()
+{
+	isChangingTargetPressed = false;
+}
+
 void AGladiatorPlayer::Shield()
 {
+	shieldPressedTime = GetWorld()->TimeSeconds;
 	if (!attack)
 	{
 		usingShield = true;
@@ -139,6 +196,11 @@ void AGladiatorPlayer::Shield()
 
 void AGladiatorPlayer::StopShield()
 {
+	float pressedTime = GetWorld()->TimeSeconds - shieldPressedTime;
+
+	if (pressedTime <= pressedTimeForLock)
+		Lock();
+
 	usingShield = false;
 	defenseCollider->Deactivate();
 }

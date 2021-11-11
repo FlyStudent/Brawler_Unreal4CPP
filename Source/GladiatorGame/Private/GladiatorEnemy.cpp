@@ -8,7 +8,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
-#include "Perception/PawnSensingComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 

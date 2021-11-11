@@ -1,7 +1,9 @@
 #include "EnemyManager.h"
 
-#include "GladiatorEnemy.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "GladiatorEnemy.h"
+#include "GladiatorPlayer.h"
 
 AEnemyManager::AEnemyManager()
 {
@@ -64,4 +66,27 @@ void AEnemyManager::CheckEnemyState()
 void AEnemyManager::BroadcastEnemyKilledEvent()
 {
 	enemyKilledEvent.Broadcast();
+}
+
+void AEnemyManager::SendEnnemiesTransformToPlayer()
+{
+	auto player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	FVector playerLocation = player->GetActorLocation();
+
+	float minDistance = 10000.f;
+	TArray<FTransform> transforms;
+	for (auto enemy : enemyArray)
+	{
+		float dist = FVector::Dist(playerLocation, enemy->GetActorLocation());
+		if (dist < minDistance)
+		{
+			transforms.Insert(enemy->GetActorTransform(), 0);
+			minDistance = dist;
+		}
+		else
+			transforms.Add(enemy->GetActorTransform());
+	}
+
+
+	player->SetEnnemiesTransform(transforms);
 }

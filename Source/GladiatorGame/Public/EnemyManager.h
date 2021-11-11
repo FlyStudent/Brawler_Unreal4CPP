@@ -27,6 +27,9 @@ private:
 	UFUNCTION()
 	void CheckEnemyState();
 
+	UFUNCTION(BlueprintCallable)
+	void SendEnnemiesTransformToPlayer();
+
 public:	
 	AEnemyManager();
 
