@@ -33,6 +33,7 @@ void AEnemyAIController::BeginPlay()
 	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
 	blackboard->SetValueAsFloat("minDistanceFromPlayer", owner->GetDistanceFromPlayer(true));
 	blackboard->SetValueAsFloat("maxDistanceFromPlayer", owner->GetDistanceFromPlayer(false));
+	blackboard->SetValueAsFloat("distanceFromPlayerToMoveOnSide", owner->GetDistanceFromPlayer(false) + 100.f);
 	blackboard->SetValueAsBool("alive", true);
 }
 

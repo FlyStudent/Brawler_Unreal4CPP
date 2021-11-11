@@ -19,22 +19,15 @@ bool UMyBTDecorator_CheckSightToPlayer::CalculateRawConditionValue(UBehaviorTree
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-	bool attack = blackboard->GetValueAsBool("attack");
-	if (attack)
-		return false;
-
 #if 1 //Line trace
-	FCollisionQueryParams traceParams = FCollisionQueryParams(FName("RV_Trace"));
-	traceParams.bTraceComplex = true;
-	traceParams.bReturnPhysicalMaterial = false;
-	FHitResult hit;
 
 	// Compute sight line
 	FVector start, end;
-	start = owner->GetActorLocation();
+	start = owner->GetActorLocation() + owner->GetActorForwardVector().GetClampedToSize(75.f, 75.f);
 	end = Cast<AGladiatorPlayer>(blackboard->GetValueAsObject(GetSelectedBlackboardKey()))->GetActorLocation();
-	start = start + (end - start).GetClampedToSize(75.f, 75.f);
+
 	// Trace line
+	FHitResult hit;
 	owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_Pawn);
 
 	//DrawDebugLine(owner->GetWorld(), start, end, FColor::Red, true, -1.f, 1, 5.f);
