@@ -47,7 +47,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 	// Attack
 	invincibilityTimerTime = 2.f;
-	pressedTimeForLock = 0.2f;
 	changeTargetCooldown = 0.5f;
 
 	// Life
@@ -72,7 +71,7 @@ void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (isLocking)
+	if (isLocking && orderedEnemies.Num() > 0)
 	{
 		FVector direction =  orderedEnemies[currentLockEnemy]->GetActorLocation() - GetActorLocation();
 		direction = direction.GetSafeNormal();
@@ -101,6 +100,7 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
+	PlayerInputComponent->BindAction("Lock", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Lock);
 	PlayerInputComponent->BindAction("ChangeTargetRight", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetRight);
 	PlayerInputComponent->BindAction("ChangeTargetLeft", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetLeft);
 }
@@ -143,13 +143,16 @@ void AGladiatorPlayer::MoveRight(float Value)
 
 void AGladiatorPlayer::Lock()
 {
-	if (!isLocking)
+	if (!isLocking) // Locking
 	{
 		currentLockEnemy = 0;
 		BroadcastLockEvent();
 	}
-	else
+	else // Unlocking
 	{
+		if (orderedEnemies.Num() != 0)
+			orderedEnemies[currentLockEnemy]->SetLock(false);
+
 		CameraBoom->bUsePawnControlRotation = true;
 		BroadcastUnlockEvent();
 	}
@@ -163,11 +166,11 @@ void AGladiatorPlayer::ChangeTargetRight()
 		return;
 
 	isChangingTarget = true;
-	orderedEnemies[currentLockEnemy]->locked = false;
+	orderedEnemies[currentLockEnemy]->SetLock(false);
 
 	currentLockEnemy = currentLockEnemy == orderedEnemies.Num() -1 ? 0 : currentLockEnemy + 1;
 	
-	orderedEnemies[currentLockEnemy]->locked = true;
+	orderedEnemies[currentLockEnemy]->SetLock(true);
 
 	FTimerHandle timer;
 	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
@@ -179,11 +182,11 @@ void AGladiatorPlayer::ChangeTargetLeft()
 		return;
 
 	isChangingTarget = true;
-	orderedEnemies[currentLockEnemy]->locked = false;
+	orderedEnemies[currentLockEnemy]->SetLock(false);
 
 	currentLockEnemy = currentLockEnemy == 0 ? orderedEnemies.Num() - 1 : currentLockEnemy - 1;
 
-	orderedEnemies[currentLockEnemy]->locked = true;
+	orderedEnemies[currentLockEnemy]->SetLock(true);
 
 	FTimerHandle timer;
 	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
@@ -196,7 +199,6 @@ void AGladiatorPlayer::FreeChangeTarget()
 
 void AGladiatorPlayer::Shield()
 {
-	shieldPressedTime = GetWorld()->TimeSeconds;
 	if (!attack)
 	{
 		usingShield = true;
@@ -206,11 +208,6 @@ void AGladiatorPlayer::Shield()
 
 void AGladiatorPlayer::StopShield()
 {
-	float pressedTime = GetWorld()->TimeSeconds - shieldPressedTime;
-
-	if (pressedTime <= pressedTimeForLock)
-		Lock();
-
 	usingShield = false;
 	defenseCollider->Deactivate();
 }

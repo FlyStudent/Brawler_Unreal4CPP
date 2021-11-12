@@ -6,6 +6,9 @@
 
 #include "GladiatorEnemy.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLockEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUnlockEvent);
+
 UCLASS()
 class GLADIATORGAME_API AGladiatorEnemy : public AGladiatorEntity
 {
@@ -28,15 +31,31 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxDistanceFromPlayer;
 
-public:	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool locked = false;
+
+public:	
 	
 	AGladiatorEnemy();
+
+	// Delegate
+	UPROPERTY(BlueprintAssignable, Category = "Delegate")
+		FLockEvent lockEvent;
+	UPROPERTY(BlueprintAssignable, Category = "Delegate")
+		FUnlockEvent unlockEvent;
+
+	FORCEINLINE void BroadcastLockEvent() { lockEvent.Broadcast(); }
+	FORCEINLINE void BroadcastUnlockEvent() { unlockEvent.Broadcast(); }
+	// 
 
 	virtual void Tick(float DeltaTime) override;
 
 	void SetBlackboardAttack(bool canAttack = true);
 
 	FORCEINLINE float GetDistanceFromPlayer(bool min) { return min ? minDistanceFromPlayer : maxDistanceFromPlayer; }
+	FORCEINLINE void SetLock(bool l)
+	{
+		locked = l;
+		locked ? BroadcastLockEvent() : BroadcastUnlockEvent();
+	}
 };

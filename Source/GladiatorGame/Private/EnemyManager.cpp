@@ -55,7 +55,10 @@ void AEnemyManager::CheckEnemyState()
 	for (int i = enemyArray.Num() - 1; i >= 0; i--)
 	{
 		if (!enemyArray[i]->IsAlive())
+		{
 			enemyArray.RemoveAt(i);
+			SendEnnemiesTransformToPlayer();
+		}
 	}
 
 	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("pingas"));
@@ -71,6 +74,13 @@ void AEnemyManager::BroadcastEnemyKilledEvent()
 void AEnemyManager::SendEnnemiesTransformToPlayer()
 {
 	auto player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	if (enemyArray.Num() == 0)
+	{
+		player->Lock();
+		return;
+	}
+
 	FVector playerLocation = player->GetActorLocation();
 
 	float minDistance = 10000.f;
@@ -87,6 +97,6 @@ void AEnemyManager::SendEnnemiesTransformToPlayer()
 			orderedEnemies.Add(enemy);
 	}
 
-	orderedEnemies[0]->locked = true;
+	orderedEnemies[0]->SetLock(true);
 	player->SetEnnemiesTransform(orderedEnemies);
 }

@@ -4,8 +4,8 @@
 #include "GladiatorEntity.h"
 #include "GladiatorPlayer.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLockEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUnlockEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLockEnemyEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUnlockEnemyEvent);
 
 UCLASS()
 class GLADIATORGAME_API AGladiatorPlayer : public AGladiatorEntity
@@ -26,10 +26,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		bool isLocking;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		float pressedTimeForLock;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		float shieldPressedTime;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class AGladiatorEnemy*> orderedEnemies;
@@ -41,7 +37,6 @@ private:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 	
-	void Lock();
 	void ChangeTargetRight();
 	void ChangeTargetLeft();
 	void FreeChangeTarget();
@@ -62,12 +57,13 @@ public:
 
 	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FLockEvent lockEvent;
+		FLockEnemyEvent lockEnemyEvent;
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FUnlockEvent unlockEvent;
+		FUnlockEnemyEvent unlockEnemyEvent;
 
-	FORCEINLINE void BroadcastLockEvent() { lockEvent.Broadcast(); }
-	FORCEINLINE void BroadcastUnlockEvent() { unlockEvent.Broadcast(); }
+	FORCEINLINE void BroadcastLockEvent() { lockEnemyEvent.Broadcast(); }
+	FORCEINLINE void BroadcastUnlockEvent() { unlockEnemyEvent.Broadcast(); }
+	void Lock();
 
 	// Turn
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -81,7 +77,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE void SetEnnemiesTransform(TArray<class AGladiatorEnemy*> enemies) { orderedEnemies = enemies; };
+	FORCEINLINE void SetEnnemiesTransform(TArray<class AGladiatorEnemy*> enemies) { 
+		currentLockEnemy = 0;
+		orderedEnemies = enemies; 
+	}
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
