@@ -29,6 +29,9 @@ protected:
 	float maxDistanceFromPlayer;
 
 public:	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool locked = false;
+	
 	AGladiatorEnemy();
 
 	virtual void Tick(float DeltaTime) override;

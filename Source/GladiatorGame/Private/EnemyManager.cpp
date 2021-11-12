@@ -74,19 +74,19 @@ void AEnemyManager::SendEnnemiesTransformToPlayer()
 	FVector playerLocation = player->GetActorLocation();
 
 	float minDistance = 10000.f;
-	TArray<FTransform> transforms;
+	TArray<AGladiatorEnemy*> orderedEnemies;
 	for (auto enemy : enemyArray)
 	{
 		float dist = FVector::Dist(playerLocation, enemy->GetActorLocation());
 		if (dist < minDistance)
 		{
-			transforms.Insert(enemy->GetActorTransform(), 0);
+			orderedEnemies.Insert(enemy, 0);
 			minDistance = dist;
 		}
 		else
-			transforms.Add(enemy->GetActorTransform());
+			orderedEnemies.Add(enemy);
 	}
 
-
-	player->SetEnnemiesTransform(transforms);
+	orderedEnemies[0]->locked = true;
+	player->SetEnnemiesTransform(orderedEnemies);
 }

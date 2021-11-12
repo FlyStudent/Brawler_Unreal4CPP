@@ -48,6 +48,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 	// Attack
 	invincibilityTimerTime = 2.f;
 	pressedTimeForLock = 0.2f;
+	changeTargetCooldown = 0.5f;
 
 	// Life
 	life = 5;
@@ -71,6 +72,16 @@ void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	if (isLocking)
+	{
+		FVector direction =  orderedEnemies[currentLockEnemy]->GetActorLocation() - GetActorLocation();
+		direction = direction.GetSafeNormal();
+		direction.Z = -0.5f;
+		FRotator rotation = direction.Rotation();
+		FRotator curRotation = GetController()->GetControlRotation();
+
+		GetController()->SetControlRotation(FMath::Lerp(curRotation, rotation, 0.05f));
+	}
 }
 
 void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -86,13 +97,12 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("TurnRate", this, &AGladiatorPlayer::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGladiatorPlayer::LookUpAtRate);
-	PlayerInputComponent->BindAxis("ChangeTarget", this, &AGladiatorPlayer::ChangeTarget);
 	
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
-	PlayerInputComponent->BindAction("ChangeTargetAction", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::PressedChange);
-	PlayerInputComponent->BindAction("ChangeTargetAction", EInputEvent::IE_Released, this, &AGladiatorPlayer::ReleasedChange);
+	PlayerInputComponent->BindAction("ChangeTargetRight", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetRight);
+	PlayerInputComponent->BindAction("ChangeTargetLeft", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetLeft);
 }
 
 void AGladiatorPlayer::TurnAtRate(float Rate)
@@ -147,41 +157,41 @@ void AGladiatorPlayer::Lock()
 	isLocking = isLocking ? false : true;
 }
 
-void AGladiatorPlayer::LockOnEnemy()
+void AGladiatorPlayer::ChangeTargetRight()
 {
-	CameraBoom->bUsePawnControlRotation = false;
-}
-
-void AGladiatorPlayer::ChangeTarget(float Value)
-{
-	if ( !isLocking || isChangingTarget || !isChangingTargetPressed || ennemiesTransform.Num() == 0 )
+	if (!CanChangeTarget())
 		return;
 
 	isChangingTarget = true;
+	orderedEnemies[currentLockEnemy]->locked = false;
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::FromInt(currentLockEnemy));
-	if (Value > 0.f)
-		currentLockEnemy = currentLockEnemy == ennemiesTransform.Num() -1 ? 0 : currentLockEnemy + 1;
-	else
-		currentLockEnemy = currentLockEnemy == 0 ? ennemiesTransform.Num() - 1 : currentLockEnemy - 1;
+	currentLockEnemy = currentLockEnemy == orderedEnemies.Num() -1 ? 0 : currentLockEnemy + 1;
+	
+	orderedEnemies[currentLockEnemy]->locked = true;
 
 	FTimerHandle timer;
-	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::ReleasedChange, 1.f, false, 0.2f);
+	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
 }
 
-void AGladiatorPlayer::PressedChange()
+void AGladiatorPlayer::ChangeTargetLeft()
 {
-	isChangingTargetPressed = true;
+	if (!CanChangeTarget())
+		return;
+
+	isChangingTarget = true;
+	orderedEnemies[currentLockEnemy]->locked = false;
+
+	currentLockEnemy = currentLockEnemy == 0 ? orderedEnemies.Num() - 1 : currentLockEnemy - 1;
+
+	orderedEnemies[currentLockEnemy]->locked = true;
+
+	FTimerHandle timer;
+	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
 }
 
 void AGladiatorPlayer::FreeChangeTarget()
 {
 	isChangingTarget = false;
-}
-
-void AGladiatorPlayer::ReleasedChange()
-{
-	isChangingTargetPressed = false;
 }
 
 void AGladiatorPlayer::Shield()
