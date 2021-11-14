@@ -47,7 +47,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 
 	// Attack
 	invincibilityTimerTime = 2.f;
-	changeTargetCooldown = 0.5f;
+	changeTargetCooldown = 0.25f;
 
 	// Life
 	life = 5;
@@ -80,6 +80,8 @@ void AGladiatorPlayer::Tick(float DeltaTime)
 		FRotator curRotation = GetController()->GetControlRotation();
 
 		GetController()->SetControlRotation(FMath::Lerp(curRotation, rotation, 0.05f));
+		FRotator viewRotation(0.f, direction.ToOrientationRotator().Yaw, direction.ToOrientationRotator().Roll);
+		SetActorRotation(viewRotation);
 	}
 }
 
@@ -101,6 +103,7 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
 	PlayerInputComponent->BindAction("Lock", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Lock);
+
 	PlayerInputComponent->BindAction("ChangeTargetRight", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetRight);
 	PlayerInputComponent->BindAction("ChangeTargetLeft", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetLeft);
 }
@@ -146,6 +149,7 @@ void AGladiatorPlayer::Lock()
 	if (!isLocking) // Locking
 	{
 		currentLockEnemy = 0;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
 		BroadcastLockEvent();
 	}
 	else // Unlocking
@@ -153,7 +157,8 @@ void AGladiatorPlayer::Lock()
 		if (orderedEnemies.Num() != 0)
 			orderedEnemies[currentLockEnemy]->SetLock(false);
 
-		CameraBoom->bUsePawnControlRotation = true;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		//CameraBoom->bUsePawnControlRotation = true;
 		BroadcastUnlockEvent();
 	}
 
