@@ -210,14 +210,10 @@ void AGladiatorPlayer::FreeChangeTarget()
 void AGladiatorPlayer::Shield()
 {
 	if (!attack)
-	{
 		usingShield = true;
-		defenseCollider->Activate();
-	}
 }
 
 void AGladiatorPlayer::StopShield()
 {
 	usingShield = false;
-	defenseCollider->Deactivate();
 }

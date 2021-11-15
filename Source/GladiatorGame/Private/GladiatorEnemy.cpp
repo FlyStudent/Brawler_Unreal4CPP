@@ -50,10 +50,16 @@ void AGladiatorEnemy::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!attackBlocked && attackCollider->IsActive())
+	if (attackCollider->IsActive())
 	{
 		if (auto entity = Cast<AGladiatorPlayer>(OtherActor))
-			entity->Hurt(damage);
+		{
+			float angle = entity->GetShieldForward().CosineAngle2D(GetActorForwardVector());
+			if (!entity->IsUsingShield() || angle > -0.2f)
+				entity->Hurt(damage);
+			else
+				AttackBlocked();
+		}
 	}
 }
 

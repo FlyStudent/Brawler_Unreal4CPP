@@ -29,11 +29,6 @@ AGladiatorEntity::AGladiatorEntity()
 	attackCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Attack Collider"));
 	attackCollider->SetupAttachment(weaponMesh);
 	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
-
-	defenseCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Defense Collider"));
-	defenseCollider->SetupAttachment(shieldMesh);
-	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
-	defenseCollider->SetSphereRadius(50.f);
 }
 
 void AGladiatorEntity::BeginPlay()
@@ -43,10 +38,8 @@ void AGladiatorEntity::BeginPlay()
 	life = maxLife;
 
 	attackCollider->Deactivate();
-	defenseCollider->Deactivate();
 
 	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
-	defenseCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnShieldBeginOverlap);
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
@@ -66,6 +59,7 @@ void AGladiatorEntity::EntityDead()
 
 void AGladiatorEntity::Attack()
 {
+	GetController()->StopMovement();
 	attack = true;
 }
 
@@ -105,6 +99,11 @@ void AGladiatorEntity::StopInvincibility()
 	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 0.f);
 }
 
+FVector AGladiatorEntity::GetShieldForward() const
+{ 
+	return shieldMesh->GetRightVector(); 
+}
+
 void AGladiatorEntity::Hurt(int dmg)
 {
 	if (!invincibility) 
@@ -124,24 +123,14 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 											 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!attackBlocked && attackCollider->IsActive())
+
+	if (attackCollider->IsActive())
 	{
 		auto entity = Cast<AGladiatorEntity>(OtherActor);
 
 		if (entity && entity->IsAlive() && entity != this)
+		{
 			entity->Hurt(damage);
-	}
-}
-
-void AGladiatorEntity::OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-	bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (defenseCollider->IsActive())
-	{
-		auto entity = Cast<AGladiatorEntity>(OtherActor);
-
-		if (entity)
-			entity->AttackBlocked();
+		}
 	}
 }
