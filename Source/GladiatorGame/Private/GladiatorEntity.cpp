@@ -50,6 +50,7 @@ void AGladiatorEntity::BeginPlay()
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
+	
 }
 
 void AGladiatorEntity::CheckIsAlive()

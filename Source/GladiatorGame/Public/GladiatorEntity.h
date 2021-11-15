@@ -106,4 +106,7 @@ public:
 	FORCEINLINE int GetLife() const { return life; }
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const { return life > 0; }
+
+	// Debug action
+	FORCEINLINE void DebugPrint() { GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Debug")); }
 };

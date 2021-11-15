@@ -61,7 +61,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
 		FUnlockEnemyEvent unlockEnemyEvent;
 
+	UFUNCTION()
 	FORCEINLINE void BroadcastLockEvent() { lockEnemyEvent.Broadcast(); }
+	UFUNCTION()
 	FORCEINLINE void BroadcastUnlockEvent() { unlockEnemyEvent.Broadcast(); }
 	void Lock();
 

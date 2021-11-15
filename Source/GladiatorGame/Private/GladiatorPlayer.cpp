@@ -56,6 +56,8 @@ AGladiatorPlayer::AGladiatorPlayer()
 void AGladiatorPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	lockEnemyEvent.AddDynamic(this, &AGladiatorPlayer::DebugPrint);
 }
 
 void AGladiatorPlayer::EntityDead()
