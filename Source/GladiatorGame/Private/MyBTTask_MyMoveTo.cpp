@@ -13,9 +13,7 @@ UMyBTTask_MyMoveTo::UMyBTTask_MyMoveTo(const FObjectInitializer& ObjectInitializ
 EBTNodeResult::Type UMyBTTask_MyMoveTo::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-
 	auto blackboard = controller->GetBlackboardComponent();
-	//auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
 	controller->MoveToActor(Cast<AActor>(blackboard->GetValueAsObject(GetSelectedBlackboardKey())), AcceptableRadius);
 

@@ -14,7 +14,6 @@ UMyBTTask_ComeBack::UMyBTTask_ComeBack(const FObjectInitializer& ObjectInitializ
 EBTNodeResult::Type UMyBTTask_ComeBack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
 	owner->SetBlackboardAttack(false);

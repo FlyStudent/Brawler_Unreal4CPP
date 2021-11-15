@@ -19,16 +19,19 @@ class GLADIATORGAME_API AGladiatorPlayer : public AGladiatorEntity
 	class UCameraComponent* FollowCamera;
 
 private:
-
 	bool isChangingTarget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		float changeTargetCooldown;
+	float changeTargetCooldown;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		bool isLocking;
+	bool isLocking;
+
+	bool canLock = true;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<class AGladiatorEnemy*> orderedEnemies;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int currentLockEnemy;
 
@@ -45,44 +48,43 @@ private:
 	void StopShield();
 
 	FORCEINLINE bool CanChangeTarget() const { return isLocking && !isChangingTarget && orderedEnemies.Num() != 0; }
-	//void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 private:
-	virtual void BeginPlay() override;
-
 	void EntityDead() override;
 
 public:	
 	AGladiatorPlayer();
 
-	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FLockEnemyEvent lockEnemyEvent;
+	FLockEnemyEvent lockEnemyEvent;
+
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FUnlockEnemyEvent unlockEnemyEvent;
+	FUnlockEnemyEvent unlockEnemyEvent;
 
 	UFUNCTION()
-	FORCEINLINE void BroadcastLockEvent() { lockEnemyEvent.Broadcast(); }
-	UFUNCTION()
-	FORCEINLINE void BroadcastUnlockEvent() { unlockEnemyEvent.Broadcast(); }
-	void Lock();
+	void BroadcastLockEvent();
 
-	// Turn
+	UFUNCTION()
+	void BroadcastUnlockEvent();
+
+	void SwitchLockState();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseTurnRate;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
-	// Functions
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	FORCEINLINE void SetEnnemiesTransform(TArray<class AGladiatorEnemy*> enemies) { 
+	FORCEINLINE void SetEnnemiesTransform(TArray<class AGladiatorEnemy*> enemies) 
+	{ 
 		currentLockEnemy = 0;
 		orderedEnemies = enemies; 
 	}
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE void DisableLock() { canLock = false; }
 };

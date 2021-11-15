@@ -14,7 +14,6 @@ UMyBTTask_Attack::UMyBTTask_Attack(const FObjectInitializer& ObjectInitializer)
 EBTNodeResult::Type UMyBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 

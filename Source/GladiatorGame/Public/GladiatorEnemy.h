@@ -19,15 +19,13 @@ private:
 	class AGladiatorPlayer* player;
 	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-
 protected:
 	virtual void BeginPlay() override;
 	virtual void EntityDead() override;
 
-	void StopAttack() override;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float minDistanceFromPlayer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float maxDistanceFromPlayer;
 
@@ -35,20 +33,16 @@ protected:
 	bool locked = false;
 
 public:	
-	
 	AGladiatorEnemy();
 
-	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FLockEvent lockEvent;
+	FLockEvent lockEvent;
+
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FUnlockEvent unlockEvent;
+	FUnlockEvent unlockEvent;
 
 	FORCEINLINE void BroadcastLockEvent() { lockEvent.Broadcast(); }
 	FORCEINLINE void BroadcastUnlockEvent() { unlockEvent.Broadcast(); }
-	// 
-
-	virtual void Tick(float DeltaTime) override;
 
 	void SetBlackboardAttack(bool canAttack = true);
 

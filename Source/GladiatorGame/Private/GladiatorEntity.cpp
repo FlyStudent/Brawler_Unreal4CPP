@@ -50,7 +50,6 @@ void AGladiatorEntity::BeginPlay()
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
-	
 }
 
 void AGladiatorEntity::CheckIsAlive()
@@ -63,16 +62,6 @@ void AGladiatorEntity::EntityDead()
 {
 	GetCharacterMovement()->Deactivate();
 	GetCharacterMovement()->DisableMovement();
-}
-
-void AGladiatorEntity::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AGladiatorEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void AGladiatorEntity::Attack()
@@ -103,6 +92,7 @@ void AGladiatorEntity::StopDamage()
 void AGladiatorEntity::Invincibility()
 {
 	invincibility = true;
+
 	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 1.f);
 	GetWorldTimerManager().ClearTimer(invincibilityTimer);
 	GetWorldTimerManager().SetTimer(invincibilityTimer, this, &AGladiatorEntity::StopInvincibility, 1.0f, true, invincibilityTimerTime);
@@ -111,17 +101,14 @@ void AGladiatorEntity::Invincibility()
 void AGladiatorEntity::StopInvincibility()
 {
 	invincibility = false;
-	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 0.f);
-}
 
-void AGladiatorEntity::Heal(int heal)
-{
-	Hurt(-heal);
+	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 0.f);
 }
 
 void AGladiatorEntity::Hurt(int dmg)
 {
-	if (!invincibility) {
+	if (!invincibility) 
+	{
 		life = FMath::Max(life - dmg, 0);
 
 		BroadcastHurtEvent();
@@ -132,8 +119,6 @@ void AGladiatorEntity::BroadcastHurtEvent()
 {
 	hurtEvent.Broadcast();
 }
-
-// COLLISIONS
 
 void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -154,12 +139,9 @@ void AGladiatorEntity::OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp,
 {
 	if (defenseCollider->IsActive())
 	{
-
 		auto entity = Cast<AGladiatorEntity>(OtherActor);
 
 		if (entity)
-		{
 			entity->AttackBlocked();
-		}
 	}
 }

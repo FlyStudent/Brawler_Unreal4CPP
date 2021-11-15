@@ -10,7 +10,7 @@ class GLADIATORGAME_API UMyBTTask_MyMoveTo : public UBTTask_BlackboardBase
 	GENERATED_BODY()
 
 	UPROPERTY(category = Node, EditAnywhere)
-		float AcceptableRadius;
+	float AcceptableRadius;
 
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

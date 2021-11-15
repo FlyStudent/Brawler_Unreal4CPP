@@ -51,7 +51,6 @@ void AEnemyAIController::MoveBackward()
 	if (owner->IsAlive())
 		SetFocus(player);
 
-
 	FVector Direction = owner->GetActorLocation() - player->GetActorLocation();
 	const FVector location = owner->GetActorLocation() + Direction;
 	MoveToLocation(location);
@@ -68,9 +67,4 @@ void AEnemyAIController::MoveOnSide()
 	FVector location = owner->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
 
 	MoveToLocation(location);
-}
-
-void AEnemyAIController::OnPossess(APawn* const pawn) 
-{
-	Super::OnPossess(pawn);
 }

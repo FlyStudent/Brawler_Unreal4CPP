@@ -14,12 +14,8 @@ UMyBTService_LifeService::UMyBTService_LifeService(const FObjectInitializer& Obj
 void UMyBTService_LifeService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	auto controller = OwnerComp.GetAIOwner();
-
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-	if (owner)
-	{
-		blackboard->SetValueAsBool("alive", owner->IsAlive());
-	}
+	blackboard->SetValueAsBool("alive", owner->IsAlive());
 }

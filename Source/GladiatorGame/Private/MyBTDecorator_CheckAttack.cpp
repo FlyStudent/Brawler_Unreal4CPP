@@ -13,7 +13,6 @@ UMyBTDecorator_CheckAttack::UMyBTDecorator_CheckAttack(const FObjectInitializer&
 bool UMyBTDecorator_CheckAttack::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const 
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-	
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 

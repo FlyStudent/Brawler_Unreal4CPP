@@ -1,7 +1,6 @@
 #include "GladiatorPlayer.h"
 #include "GladiatorEnemy.h"
 
-
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -41,9 +40,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 #pragma endregion
 
-
-///// ADDITIONAL VARIABLE
-
 	// Attack
 	invincibilityTimerTime = 2.f;
 	changeTargetCooldown = 0.25f;
@@ -53,13 +49,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 	damage = 1;
 }
 
-void AGladiatorPlayer::BeginPlay()
-{
-	Super::BeginPlay();
-
-	lockEnemyEvent.AddDynamic(this, &AGladiatorPlayer::DebugPrint);
-}
-
 void AGladiatorPlayer::EntityDead()
 {
 	Super::EntityDead();
@@ -67,20 +56,24 @@ void AGladiatorPlayer::EntityDead()
 	DisableInput(Cast<APlayerController>(GetController()));
 }
 
-// Called every frame
 void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
 	if (isLocking && orderedEnemies.Num() > 0)
 	{
+		// Compute the direction from player to enemy
 		FVector direction =  orderedEnemies[currentLockEnemy]->GetActorLocation() - GetActorLocation();
 		direction = direction.GetSafeNormal();
-		direction.Z = -0.5f;
+		direction.Z = -0.4f;
+
+		// Rotate Camera
 		FRotator rotation = direction.Rotation();
 		FRotator curRotation = GetController()->GetControlRotation();
 
 		GetController()->SetControlRotation(FMath::Lerp(curRotation, rotation, 0.05f));
+
+		// Rotate Player
 		FRotator viewRotation(0.f, direction.ToOrientationRotator().Yaw, direction.ToOrientationRotator().Roll);
 		SetActorRotation(viewRotation);
 	}
@@ -103,7 +96,7 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
-	PlayerInputComponent->BindAction("Lock", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Lock);
+	PlayerInputComponent->BindAction("Lock", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::SwitchLockState);
 
 	PlayerInputComponent->BindAction("ChangeTargetRight", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetRight);
 	PlayerInputComponent->BindAction("ChangeTargetLeft", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetLeft);
@@ -145,13 +138,25 @@ void AGladiatorPlayer::MoveRight(float Value)
 	}
 }
 
-void AGladiatorPlayer::Lock()
+void AGladiatorPlayer::BroadcastLockEvent() 
 {
-	if (!isLocking) // Locking
+	lockEnemyEvent.Broadcast(); 
+}
+
+void AGladiatorPlayer::BroadcastUnlockEvent()
+{
+	unlockEnemyEvent.Broadcast();
+}
+
+void AGladiatorPlayer::SwitchLockState()
+{
+	if (canLock && !isLocking) // Locking
 	{
 		currentLockEnemy = 0;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		BroadcastLockEvent();
+
+		isLocking = true;
 	}
 	else // Unlocking
 	{
@@ -159,11 +164,10 @@ void AGladiatorPlayer::Lock()
 			orderedEnemies[currentLockEnemy]->SetLock(false);
 
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		//CameraBoom->bUsePawnControlRotation = true;
 		BroadcastUnlockEvent();
-	}
 
-	isLocking = isLocking ? false : true;
+		isLocking = false;
+	}
 }
 
 void AGladiatorPlayer::ChangeTargetRight()

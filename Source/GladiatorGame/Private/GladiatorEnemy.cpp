@@ -41,16 +41,6 @@ void AGladiatorEnemy::EntityDead()
 	SetLock(false);
 }
 
-void AGladiatorEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
-void AGladiatorEnemy::StopAttack()
-{
-	Super::StopAttack();
-}
-
 void AGladiatorEnemy::SetBlackboardAttack(bool canAttack)
 {
 	controller->GetBlackboard()->SetValueAsBool("canAttack", canAttack);

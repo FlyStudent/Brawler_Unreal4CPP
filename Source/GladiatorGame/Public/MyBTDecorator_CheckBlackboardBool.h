@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Decorators/BTDecorator_BlackboardBase.h"
-#include "MyBTDecorator_CheckIsAlive.generated.h"
+#include "MyBTDecorator_CheckBlackboardBool.generated.h"
 
 UCLASS()
 class GLADIATORGAME_API UMyBTDecorator_CheckBlackboardBool : public UBTDecorator_BlackboardBase

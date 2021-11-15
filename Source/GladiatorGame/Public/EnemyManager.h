@@ -19,7 +19,6 @@ private:
 
 	FTimerHandle attackTimer;
 
-
 	virtual void BeginPlay() override;
 	void ChooseAttackingEnemy();
 	void ResetAttackTimer();
@@ -28,16 +27,14 @@ private:
 	void CheckEnemyState();
 
 	UFUNCTION(BlueprintCallable)
-	void SendEnnemiesTransformToPlayer();
+	void SendOrderedEnnemiesToPlayer();
 
 public:	
 	AEnemyManager();
 
-	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
-		FEnemyKilledEvent enemyKilledEvent;
+	FEnemyKilledEvent enemyKilledEvent;
+
 	UFUNCTION()
 	void BroadcastEnemyKilledEvent();
-
-	virtual void Tick(float DeltaTime) override;
 };

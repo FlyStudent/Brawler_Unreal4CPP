@@ -15,11 +15,8 @@ UMyBTDecorator_CheckSightToPlayer::UMyBTDecorator_CheckSightToPlayer(const FObje
 bool UMyBTDecorator_CheckSightToPlayer::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
-
-#if 1 //Line trace
 
 	// Compute sight line
 	FVector start, end;
@@ -30,15 +27,10 @@ bool UMyBTDecorator_CheckSightToPlayer::CalculateRawConditionValue(UBehaviorTree
 	FHitResult hit;
 	owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_Pawn);
 
-	//DrawDebugLine(owner->GetWorld(), start, end, FColor::Red, true, -1.f, 1, 5.f);
-
 	AGladiatorPlayer* entity = Cast<AGladiatorPlayer>(hit.GetActor());
 	bool sightTo = false;
 	if (entity)
 		sightTo = true;
-#else //Sight to
-	bool sightTo = controller->LineOfSightTo(Cast<APawn>(blackboard->GetValueAsObject(GetSelectedBlackboardKey())), (FVector)(ForceInit), true);
-#endif
 
 	return !sightTo;
 }

@@ -9,7 +9,6 @@ class GLADIATORGAME_API UMyBTTask_ComeBack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
-
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 public:

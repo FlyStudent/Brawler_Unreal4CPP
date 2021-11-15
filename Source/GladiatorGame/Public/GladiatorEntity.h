@@ -12,32 +12,33 @@ class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 	GENERATED_BODY()
 
 protected:
-
+	/// LIFE & INVINVIBILITY
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int life;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int maxLife;
 
 	FTimerHandle invincibilityTimer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Invincibility)
 	float invincibilityTimerTime;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Invincibility)
 	bool invincibility;
 
 	/// ATTACK & SHIELD
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 	bool attack;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack)
 	int damage;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
 	bool attackBlocked;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
-
-
-	/// DEFAULT FUNC 
-	virtual void BeginPlay() override;
 
 	/// MESHES AND COLLIDERS
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
@@ -54,16 +55,19 @@ protected:
 
 	UFUNCTION()
 	virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	UFUNCTION()
 	virtual void OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void Invincibility();
+
 	UFUNCTION()
 	void StopInvincibility();
 	
 	UFUNCTION(BlueprintCallable)
 	void BeginDamage();
+
 	UFUNCTION(BlueprintCallable)
 	void StopDamage();
 
@@ -75,15 +79,11 @@ protected:
 
 	virtual void EntityDead();
 	
+	virtual void BeginPlay() override;
 
 public:	
-
 	AGladiatorEntity();
-	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	// Delegate
 	UPROPERTY(BlueprintAssignable, Category = "Delegate")
 	FHurtEvent hurtEvent;
 
@@ -91,12 +91,11 @@ public:
 	void BroadcastHurtEvent();
 
 	UFUNCTION(BlueprintCallable)
-		virtual void Attack();
-	UFUNCTION()
-		void AttackBlocked();
+	virtual void Attack();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void Heal(int heal);
+	UFUNCTION()
+	void AttackBlocked();
+
 	UFUNCTION(BlueprintCallable)
 	virtual void Hurt(int dmg);
 
@@ -104,9 +103,7 @@ public:
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
+
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const { return life > 0; }
-
-	// Debug action
-	FORCEINLINE void DebugPrint() { GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Debug")); }
 };

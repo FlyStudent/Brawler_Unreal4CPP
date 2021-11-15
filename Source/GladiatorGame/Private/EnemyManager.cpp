@@ -7,7 +7,8 @@
 
 AEnemyManager::AEnemyManager()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
 	maxTime = 6.f;
 }
 
@@ -27,11 +28,6 @@ void AEnemyManager::BeginPlay()
 	}
 
 	ResetAttackTimer();
-}
-
-void AEnemyManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AEnemyManager::ChooseAttackingEnemy()
@@ -57,11 +53,10 @@ void AEnemyManager::CheckEnemyState()
 		if (!enemyArray[i]->IsAlive())
 		{
 			enemyArray.RemoveAt(i);
-			SendEnnemiesTransformToPlayer();
+			SendOrderedEnnemiesToPlayer();
 		}
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("pingas"));
 	if (enemyArray.Num() == 0)
 		BroadcastEnemyKilledEvent();
 }
@@ -71,13 +66,14 @@ void AEnemyManager::BroadcastEnemyKilledEvent()
 	enemyKilledEvent.Broadcast();
 }
 
-void AEnemyManager::SendEnnemiesTransformToPlayer()
+void AEnemyManager::SendOrderedEnnemiesToPlayer()
 {
 	auto player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
 	if (enemyArray.Num() == 0)
 	{
-		player->Lock();
+		player->DisableLock();
+		player->SwitchLockState();
 		return;
 	}
 
