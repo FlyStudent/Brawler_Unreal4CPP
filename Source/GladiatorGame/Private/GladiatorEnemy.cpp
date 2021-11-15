@@ -15,7 +15,7 @@ AGladiatorEnemy::AGladiatorEnemy()
 {
 	invincibilityTimerTime = 0.2f;
 
-	life = 3;
+	maxLife = 3;
 	damage = 1;
 
 	minDistanceFromPlayer = 300.f;

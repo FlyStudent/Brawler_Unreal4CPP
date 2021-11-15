@@ -13,8 +13,10 @@ class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int life;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int maxLife;
 
 	FTimerHandle invincibilityTimer;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Invincibility)

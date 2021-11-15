@@ -40,6 +40,8 @@ void AGladiatorEntity::BeginPlay()
 {
 	Super::BeginPlay();
 
+	life = maxLife;
+
 	attackCollider->Deactivate();
 	defenseCollider->Deactivate();
 

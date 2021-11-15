@@ -1,7 +1,6 @@
 #include "GladiatorPlayer.h"
 #include "GladiatorEnemy.h"
 
-#include "HeadMountedDisplayFunctionLibrary.h"
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -50,7 +49,7 @@ AGladiatorPlayer::AGladiatorPlayer()
 	changeTargetCooldown = 0.25f;
 
 	// Life
-	life = 5;
+	maxLife = 5;
 	damage = 1;
 }
 
