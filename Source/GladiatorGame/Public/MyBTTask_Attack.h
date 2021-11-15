@@ -8,7 +8,6 @@ UCLASS()
 class GLADIATORGAME_API UMyBTTask_Attack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
-	
 
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

@@ -33,6 +33,7 @@ void AEnemyAIController::BeginPlay()
 	blackboard->SetValueAsVector("attackLocation", FVector::ZeroVector);
 	blackboard->SetValueAsFloat("minDistanceFromPlayer", owner->GetDistanceFromPlayer(true));
 	blackboard->SetValueAsFloat("maxDistanceFromPlayer", owner->GetDistanceFromPlayer(false));
+	blackboard->SetValueAsFloat("distanceFromPlayerToMoveOnSide", owner->GetDistanceFromPlayer(false) + 100.f);
 	blackboard->SetValueAsBool("alive", true);
 }
 
@@ -50,7 +51,6 @@ void AEnemyAIController::MoveBackward()
 	if (owner->IsAlive())
 		SetFocus(player);
 
-
 	FVector Direction = owner->GetActorLocation() - player->GetActorLocation();
 	const FVector location = owner->GetActorLocation() + Direction;
 	MoveToLocation(location);
@@ -67,9 +67,4 @@ void AEnemyAIController::MoveOnSide()
 	FVector location = owner->GetActorLocation() + Direction.RotateAngleAxis(90.f, FVector::UpVector);
 
 	MoveToLocation(location);
-}
-
-void AEnemyAIController::OnPossess(APawn* const pawn) 
-{
-	Super::OnPossess(pawn);
 }

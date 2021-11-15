@@ -12,10 +12,10 @@ class GLADIATORGAME_API AEnemyAIController : public AAIController
 private:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-		class UBehaviorTreeComponent* behaviorTreeComponent;
+	class UBehaviorTreeComponent* behaviorTreeComponent;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-		class UBehaviorTree* bTree;
+	class UBehaviorTree* bTree;
 
 	class UBlackboardComponent* blackboard;
 	class AGladiatorPlayer* player;
@@ -24,7 +24,7 @@ private:
 public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
-		bool prepareAttack;
+	bool prepareAttack;
 
 	AEnemyAIController(FObjectInitializer const& ObjectInitializer = FObjectInitializer::Get());
 
@@ -34,8 +34,6 @@ public:
 
 	void MoveBackward();
 	void MoveOnSide();
-
-	virtual void OnPossess(APawn* const pawn) override;
 
 	FORCEINLINE class UBlackboardComponent* GetBlackboard() const { return blackboard; };
 };

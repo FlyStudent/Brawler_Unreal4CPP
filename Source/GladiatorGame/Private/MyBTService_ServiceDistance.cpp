@@ -14,13 +14,9 @@ UMyBTService_ServiceDistance::UMyBTService_ServiceDistance(const FObjectInitiali
 void UMyBTService_ServiceDistance::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	auto controller = OwnerComp.GetAIOwner();
-
 	auto blackboard = controller->GetBlackboardComponent();
 	auto owner = Cast<AGladiatorEnemy>(controller->GetPawn());
 
-	if (owner)
-	{
-		float distanceFromPlayer = FVector::Dist(owner->GetActorLocation(), Cast<AGladiatorPlayer>(blackboard->GetValueAsObject("player"))->GetActorLocation());
-		blackboard->SetValueAsFloat("distanceFromPlayer", distanceFromPlayer);
-	}
+	float distanceFromPlayer = FVector::Dist(owner->GetActorLocation(), Cast<AGladiatorPlayer>(blackboard->GetValueAsObject("player"))->GetActorLocation());
+	blackboard->SetValueAsFloat("distanceFromPlayer", distanceFromPlayer);
 }

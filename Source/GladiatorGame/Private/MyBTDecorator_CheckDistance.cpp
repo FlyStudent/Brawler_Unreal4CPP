@@ -13,7 +13,6 @@ UMyBTDecorator_CheckDistance::UMyBTDecorator_CheckDistance(const FObjectInitiali
 bool UMyBTDecorator_CheckDistance::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const 
 {
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-
 	auto blackboard = controller->GetBlackboardComponent();
 
     float distanceFromPlayer = blackboard->GetValueAsFloat("distanceFromPlayer");

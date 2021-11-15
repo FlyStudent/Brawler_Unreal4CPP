@@ -13,7 +13,7 @@ UMyBTTask_MoveOnSide::UMyBTTask_MoveOnSide(const FObjectInitializer& ObjectIniti
 
 EBTNodeResult::Type UMyBTTask_MoveOnSide::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AEnemyAIController* controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
+	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
 
 	controller->MoveOnSide();
 

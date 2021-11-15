@@ -1,11 +1,14 @@
 #include "EnemyManager.h"
 
-#include "GladiatorEnemy.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "GladiatorEnemy.h"
+#include "GladiatorPlayer.h"
 
 AEnemyManager::AEnemyManager()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
 	maxTime = 6.f;
 }
 
@@ -25,11 +28,6 @@ void AEnemyManager::BeginPlay()
 	}
 
 	ResetAttackTimer();
-}
-
-void AEnemyManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 void AEnemyManager::ChooseAttackingEnemy()
@@ -53,10 +51,12 @@ void AEnemyManager::CheckEnemyState()
 	for (int i = enemyArray.Num() - 1; i >= 0; i--)
 	{
 		if (!enemyArray[i]->IsAlive())
+		{
 			enemyArray.RemoveAt(i);
+			SendOrderedEnnemiesToPlayer();
+		}
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("pingas"));
 	if (enemyArray.Num() == 0)
 		BroadcastEnemyKilledEvent();
 }
@@ -64,4 +64,35 @@ void AEnemyManager::CheckEnemyState()
 void AEnemyManager::BroadcastEnemyKilledEvent()
 {
 	enemyKilledEvent.Broadcast();
+}
+
+void AEnemyManager::SendOrderedEnnemiesToPlayer()
+{
+	auto player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	if (enemyArray.Num() == 0)
+	{
+		player->DisableLock();
+		player->SwitchLockState();
+		return;
+	}
+
+	FVector playerLocation = player->GetActorLocation();
+
+	float minDistance = 10000.f;
+	TArray<AGladiatorEnemy*> orderedEnemies;
+	for (auto enemy : enemyArray)
+	{
+		float dist = FVector::Dist(playerLocation, enemy->GetActorLocation());
+		if (dist < minDistance)
+		{
+			orderedEnemies.Insert(enemy, 0);
+			minDistance = dist;
+		}
+		else
+			orderedEnemies.Add(enemy);
+	}
+
+	orderedEnemies[0]->SetLock(true);
+	player->SetEnnemiesTransform(orderedEnemies);
 }

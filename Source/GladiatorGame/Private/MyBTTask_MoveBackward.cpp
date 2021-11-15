@@ -12,8 +12,8 @@ UMyBTTask_MoveBackward::UMyBTTask_MoveBackward(const FObjectInitializer& ObjectI
 
 EBTNodeResult::Type UMyBTTask_MoveBackward::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AEnemyAIController* controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-	
+	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
+
 	controller->MoveBackward();
 
 	return EBTNodeResult::Succeeded;
