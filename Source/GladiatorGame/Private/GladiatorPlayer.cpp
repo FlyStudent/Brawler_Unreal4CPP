@@ -1,8 +1,6 @@
 #include "GladiatorPlayer.h"
 #include "GladiatorEnemy.h"
 
-#include "HeadMountedDisplayFunctionLibrary.h"
-
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 
