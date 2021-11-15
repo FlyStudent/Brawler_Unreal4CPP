@@ -27,8 +27,6 @@ AGladiatorPlayer::AGladiatorPlayer()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
-	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -42,20 +40,13 @@ AGladiatorPlayer::AGladiatorPlayer()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 #pragma endregion
 
-
-///// ADDITIONAL VARIABLE
-
 	// Attack
 	invincibilityTimerTime = 2.f;
+	changeTargetCooldown = 0.25f;
 
 	// Life
-	life = 5;
+	maxLife = 5;
 	damage = 1;
-}
-
-void AGladiatorPlayer::BeginPlay()
-{
-	Super::BeginPlay();
 }
 
 void AGladiatorPlayer::EntityDead()
@@ -65,10 +56,27 @@ void AGladiatorPlayer::EntityDead()
 	DisableInput(Cast<APlayerController>(GetController()));
 }
 
-// Called every frame
 void AGladiatorPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (isLocking && orderedEnemies.Num() > 0)
+	{
+		// Compute the direction from player to enemy
+		FVector direction =  orderedEnemies[currentLockEnemy]->GetActorLocation() - GetActorLocation();
+		direction = direction.GetSafeNormal();
+		direction.Z = -0.4f;
+
+		// Rotate Camera
+		FRotator rotation = direction.Rotation();
+		FRotator curRotation = GetController()->GetControlRotation();
+
+		GetController()->SetControlRotation(FMath::Lerp(curRotation, rotation, 0.05f));
+
+		// Rotate Player
+		FRotator viewRotation(0.f, direction.ToOrientationRotator().Yaw, direction.ToOrientationRotator().Roll);
+		SetActorRotation(viewRotation);
+	}
 }
 
 void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -84,10 +92,14 @@ void AGladiatorPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("TurnRate", this, &AGladiatorPlayer::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AGladiatorPlayer::LookUpAtRate);
-
+	
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Attack);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::Shield);
 	PlayerInputComponent->BindAction("Shield", EInputEvent::IE_Released, this, &AGladiatorPlayer::StopShield);
+	PlayerInputComponent->BindAction("Lock", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::SwitchLockState);
+
+	PlayerInputComponent->BindAction("ChangeTargetRight", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetRight);
+	PlayerInputComponent->BindAction("ChangeTargetLeft", EInputEvent::IE_Pressed, this, &AGladiatorPlayer::ChangeTargetLeft);
 }
 
 void AGladiatorPlayer::TurnAtRate(float Rate)
@@ -124,6 +136,75 @@ void AGladiatorPlayer::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AGladiatorPlayer::BroadcastLockEvent() 
+{
+	lockEnemyEvent.Broadcast(); 
+}
+
+void AGladiatorPlayer::BroadcastUnlockEvent()
+{
+	unlockEnemyEvent.Broadcast();
+}
+
+void AGladiatorPlayer::SwitchLockState()
+{
+	if (canLock && !isLocking) // Locking
+	{
+		currentLockEnemy = 0;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		BroadcastLockEvent();
+
+		isLocking = true;
+	}
+	else // Unlocking
+	{
+		if (orderedEnemies.Num() != 0)
+			orderedEnemies[currentLockEnemy]->SetLock(false);
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		BroadcastUnlockEvent();
+
+		isLocking = false;
+	}
+}
+
+void AGladiatorPlayer::ChangeTargetRight()
+{
+	if (!CanChangeTarget())
+		return;
+
+	isChangingTarget = true;
+	orderedEnemies[currentLockEnemy]->SetLock(false);
+
+	currentLockEnemy = currentLockEnemy == orderedEnemies.Num() -1 ? 0 : currentLockEnemy + 1;
+	
+	orderedEnemies[currentLockEnemy]->SetLock(true);
+
+	FTimerHandle timer;
+	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
+}
+
+void AGladiatorPlayer::ChangeTargetLeft()
+{
+	if (!CanChangeTarget())
+		return;
+
+	isChangingTarget = true;
+	orderedEnemies[currentLockEnemy]->SetLock(false);
+
+	currentLockEnemy = currentLockEnemy == 0 ? orderedEnemies.Num() - 1 : currentLockEnemy - 1;
+
+	orderedEnemies[currentLockEnemy]->SetLock(true);
+
+	FTimerHandle timer;
+	GetWorldTimerManager().SetTimer(timer, this, &AGladiatorPlayer::FreeChangeTarget, 1.f, false, changeTargetCooldown);
+}
+
+void AGladiatorPlayer::FreeChangeTarget()
+{
+	isChangingTarget = false;
 }
 
 void AGladiatorPlayer::Shield()
