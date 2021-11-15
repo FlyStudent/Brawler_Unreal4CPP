@@ -18,10 +18,10 @@ AGladiatorEntity::AGladiatorEntity()
 
 	// Meshes
 	weaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	weaponMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponPoint");
+	weaponMesh->SetupAttachment(GetMesh(), "WeaponPoint");
 
 	shieldMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ShieldMesh"));
-	shieldMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "DualWeaponPoint");
+	shieldMesh->SetupAttachment(GetMesh(), "DualWeaponPoint");
 
 	GetMesh()->SetWorldLocation(FVector(0.f, 0.f, -70.f));
 
