@@ -13,8 +13,7 @@ EBTNodeResult::Type UMyBTTask_StopMovement::ExecuteTask(UBehaviorTreeComponent& 
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
 	auto blackboard = controller->GetBlackboardComponent();
 
-	controller->StopMovement();
-	blackboard->SetValueAsBool("endMove", true);
+	blackboard->SetValueAsVector(GetSelectedBlackboardKey(), controller->GetPawn()->GetActorLocation());
 
 	return EBTNodeResult::Succeeded;
 }

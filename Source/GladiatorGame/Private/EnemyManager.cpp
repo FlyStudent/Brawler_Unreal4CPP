@@ -70,7 +70,11 @@ void AEnemyManager::SendOrderedEnnemiesToPlayer()
 {
 	auto player = Cast<AGladiatorPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
-	if (enemyArray.Num() == 0)
+	if (!player->IsLocking())
+	{
+		return;
+	}
+	else if (enemyArray.Num() == 0)
 	{
 		player->DisableLock();
 		player->SwitchLockState();

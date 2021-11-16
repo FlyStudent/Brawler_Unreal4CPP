@@ -87,4 +87,5 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	FORCEINLINE void DisableLock() { canLock = false; }
+	FORCEINLINE bool IsLocking() { return isLocking; }
 };
