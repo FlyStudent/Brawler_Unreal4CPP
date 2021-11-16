@@ -4,6 +4,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Sound/SoundCue.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -34,6 +37,8 @@ AGladiatorEntity::AGladiatorEntity()
 	defenseCollider->SetupAttachment(shieldMesh);
 	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
 	defenseCollider->SetSphereRadius(50.f);
+
+	attackFailed = true;
 }
 
 void AGladiatorEntity::BeginPlay()
@@ -72,6 +77,7 @@ void AGladiatorEntity::Attack()
 void AGladiatorEntity::StopAttack()
 {
 	attack = attackBlocked = false;
+	attackFailed = true;
 }
 
 void AGladiatorEntity::AttackBlocked()
@@ -129,7 +135,10 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 		auto entity = Cast<AGladiatorEntity>(OtherActor);
 
 		if (entity && entity->IsAlive() && entity != this)
+		{
 			entity->Hurt(damage);
+			attackFailed = false;
+		}
 	}
 }
 

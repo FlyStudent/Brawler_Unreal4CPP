@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool usingShield;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Attack)
+	bool attackFailed;
+
 	/// MESHES AND COLLIDERS
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* weaponMesh;

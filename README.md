@@ -69,3 +69,5 @@ Lock
 Sound
 ---
 * Random sound when attacking
+* Different sounds when attack is missed or not
+* Ambient music
