@@ -66,8 +66,14 @@ Lock
 * Show only locked enemy health
 * Player always face locked enemy
 
-Sound
+Sounds
 ---
 * Random sound when attacking
 * Different sounds when attack is missed or not
 * Ambient music
+* Footsteps depending of surface
+
+Visual FX
+---
+* Walking effect
+* Blood effect
