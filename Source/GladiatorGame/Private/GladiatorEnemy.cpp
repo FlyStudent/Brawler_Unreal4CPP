@@ -44,6 +44,7 @@ void AGladiatorEnemy::EntityDead()
 void AGladiatorEnemy::SetBlackboardAttack(bool canAttack)
 {
 	controller->GetBlackboard()->SetValueAsBool("canAttack", canAttack);
+	controller->GetBlackboard()->SetValueAsBool("endMove", false);
 }
 
 void AGladiatorEnemy::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
