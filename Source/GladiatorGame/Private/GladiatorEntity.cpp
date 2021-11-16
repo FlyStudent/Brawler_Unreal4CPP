@@ -3,8 +3,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-
+#include "Particles/ParticleSystem.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -29,6 +29,9 @@ AGladiatorEntity::AGladiatorEntity()
 	attackCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Attack Collider"));
 	attackCollider->SetupAttachment(weaponMesh);
 	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
+
+	// ParticleSystem
+	bloodParticleSystem = CreateDefaultSubobject<UParticleSystem>(TEXT("Blood Particle System"));
 }
 
 void AGladiatorEntity::BeginPlay()
@@ -43,6 +46,7 @@ void AGladiatorEntity::BeginPlay()
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
+	hurtEvent.AddDynamic(this, &AGladiatorEntity::EmitBlood);
 }
 
 void AGladiatorEntity::CheckIsAlive()
@@ -112,6 +116,11 @@ void AGladiatorEntity::Hurt(int dmg)
 
 		BroadcastHurtEvent();
 	}
+}
+
+void AGladiatorEntity::EmitBlood()
+{
+	UGameplayStatics::SpawnEmitterAttached(bloodParticleSystem, GetMesh(), "b_Beard");
 }
 
 void AGladiatorEntity::BroadcastHurtEvent()
