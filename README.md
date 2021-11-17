@@ -4,6 +4,7 @@
 - [Description](##Description)
 - [Controls](##Controls)
 - [Bonus Features](##Bonus%20Features)
+- [Remark](##Remark)
 
 <br>
 
@@ -77,3 +78,12 @@ Visual FX
 ---
 * Walking effect
 * Blood effect
+* Day/Night cycle
+
+<br>
+
+## **Remark**
+
+- Enemy's life is only displayed when an enemy is locked
+
+- Because there is two light source in the scene (Light Source and DirectionalLight1 in DesertArenaBlueprint), shadows and ambient brightness can be a bit messy.
