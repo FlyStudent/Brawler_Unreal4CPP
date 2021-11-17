@@ -15,7 +15,11 @@ EBTNodeResult::Type UMyBTTask_MyMoveTo::ExecuteTask(UBehaviorTreeComponent& Owne
 	auto controller = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
 	auto blackboard = controller->GetBlackboardComponent();
 
-	controller->MoveToActor(Cast<AActor>(blackboard->GetValueAsObject(GetSelectedBlackboardKey())), AcceptableRadius);
+	auto actor = Cast<AActor>(blackboard->GetValueAsObject(GetSelectedBlackboardKey()));
+	if (actor)
+		controller->MoveToActor(actor, AcceptableRadius);
+	else
+		controller->MoveToLocation(blackboard->GetValueAsVector(GetSelectedBlackboardKey()), AcceptableRadius);
 
 	return EBTNodeResult::Succeeded;
 }

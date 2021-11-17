@@ -3,11 +3,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Sound/SoundCue.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -33,10 +30,8 @@ AGladiatorEntity::AGladiatorEntity()
 	attackCollider->SetupAttachment(weaponMesh);
 	attackCollider->SetWorldLocation(FVector(0.f, 60.f, 0.f));
 
-	defenseCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Defense Collider"));
-	defenseCollider->SetupAttachment(shieldMesh);
-	defenseCollider->SetWorldLocation(FVector(4.f, 2.f, 14.f));
-	defenseCollider->SetSphereRadius(50.f);
+	// ParticleSystem
+	bloodParticleSystem = CreateDefaultSubobject<UParticleSystem>(TEXT("Blood Particle System"));
 
 	attackFailed = true;
 }
@@ -48,13 +43,12 @@ void AGladiatorEntity::BeginPlay()
 	life = maxLife;
 
 	attackCollider->Deactivate();
-	defenseCollider->Deactivate();
 
 	attackCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnAttackBeginOverlap);
-	defenseCollider->OnComponentBeginOverlap.AddDynamic(this, &AGladiatorEntity::OnShieldBeginOverlap);
 
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::Invincibility);
 	hurtEvent.AddDynamic(this, &AGladiatorEntity::CheckIsAlive);
+	hurtEvent.AddDynamic(this, &AGladiatorEntity::EmitBlood);
 }
 
 void AGladiatorEntity::CheckIsAlive()
@@ -71,6 +65,7 @@ void AGladiatorEntity::EntityDead()
 
 void AGladiatorEntity::Attack()
 {
+	GetController()->StopMovement();
 	attack = true;
 }
 
@@ -111,6 +106,11 @@ void AGladiatorEntity::StopInvincibility()
 	GetMesh()->SetScalarParameterValueOnMaterials("Activate", 0.f);
 }
 
+FVector AGladiatorEntity::GetShieldForward() const
+{ 
+	return shieldMesh->GetRightVector(); 
+}
+
 void AGladiatorEntity::Hurt(int dmg)
 {
 	if (!invincibility) 
@@ -119,6 +119,11 @@ void AGladiatorEntity::Hurt(int dmg)
 
 		BroadcastHurtEvent();
 	}
+}
+
+void AGladiatorEntity::EmitBlood()
+{
+	UGameplayStatics::SpawnEmitterAttached(bloodParticleSystem, GetMesh(), "b_Beard");
 }
 
 void AGladiatorEntity::BroadcastHurtEvent()
@@ -130,7 +135,8 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 											 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 											 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!attackBlocked && attackCollider->IsActive())
+
+	if (attackCollider->IsActive())
 	{
 		auto entity = Cast<AGladiatorEntity>(OtherActor);
 
@@ -139,18 +145,5 @@ void AGladiatorEntity::OnAttackBeginOverlap( UPrimitiveComponent* OverlappedComp
 			entity->Hurt(damage);
 			attackFailed = false;
 		}
-	}
-}
-
-void AGladiatorEntity::OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-	bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (defenseCollider->IsActive())
-	{
-		auto entity = Cast<AGladiatorEntity>(OtherActor);
-
-		if (entity)
-			entity->AttackBlocked();
 	}
 }

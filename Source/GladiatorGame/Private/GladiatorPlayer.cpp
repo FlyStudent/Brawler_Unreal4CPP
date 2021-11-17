@@ -152,21 +152,21 @@ void AGladiatorPlayer::SwitchLockState()
 {
 	if (canLock && !isLocking) // Locking
 	{
+		isLocking = true;
+
 		currentLockEnemy = 0;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		BroadcastLockEvent();
-
-		isLocking = true;
 	}
 	else // Unlocking
 	{
+		isLocking = false;
+
 		if (orderedEnemies.Num() != 0)
 			orderedEnemies[currentLockEnemy]->SetLock(false);
 
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		BroadcastUnlockEvent();
-
-		isLocking = false;
 	}
 }
 
@@ -210,14 +210,10 @@ void AGladiatorPlayer::FreeChangeTarget()
 void AGladiatorPlayer::Shield()
 {
 	if (!attack)
-	{
 		usingShield = true;
-		defenseCollider->Activate();
-	}
 }
 
 void AGladiatorPlayer::StopShield()
 {
 	usingShield = false;
-	defenseCollider->Deactivate();
 }

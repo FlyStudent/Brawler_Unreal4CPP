@@ -13,10 +13,10 @@ class GLADIATORGAME_API AGladiatorEntity : public ACharacter
 
 protected:
 	/// LIFE & INVINVIBILITY
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int life;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int maxLife;
 
 	FTimerHandle invincibilityTimer;
@@ -53,14 +53,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* attackCollider;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class USphereComponent* defenseCollider;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* bloodParticleSystem;
 
 	UFUNCTION()
 	virtual void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	virtual void OnShieldBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void EmitBlood();
 
 	UFUNCTION()
 	void Invincibility();
@@ -99,6 +99,8 @@ public:
 	UFUNCTION()
 	void AttackBlocked();
 
+	FVector GetShieldForward() const;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void Hurt(int dmg);
 
@@ -106,6 +108,9 @@ public:
 	FORCEINLINE bool IsAttacking() const { return attack; }
 	FORCEINLINE bool IsUsingShield() const { return usingShield; }
 	FORCEINLINE int GetLife() const { return life; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsBlocked() const { return attackBlocked; }
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const { return life > 0; }
