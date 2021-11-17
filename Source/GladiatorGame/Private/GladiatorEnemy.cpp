@@ -57,7 +57,10 @@ void AGladiatorEnemy::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 		{
 			float angle = entity->GetShieldForward().CosineAngle2D(GetActorForwardVector());
 			if (!entity->IsUsingShield() || angle > -0.2f)
+			{
 				entity->Hurt(damage);
+				attackFailed = false;
+			}
 			else
 				AttackBlocked();
 		}

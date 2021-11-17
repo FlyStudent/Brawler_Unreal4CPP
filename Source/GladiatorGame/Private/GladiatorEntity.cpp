@@ -78,6 +78,7 @@ void AGladiatorEntity::StopAttack()
 void AGladiatorEntity::AttackBlocked()
 {
 	attackBlocked = true;
+	attackFailed = true;
 }
 
 void AGladiatorEntity::BeginDamage()
