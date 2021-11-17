@@ -53,32 +53,33 @@ Left / Right Shoulder   | Change locked enemy
 
 Input
 ---
-* XBOX controller supported in game and menus
+- XBOX controller supported in game and menus
 
 UI
 ---
-* Main Menu
-* Pause Menu
+- Main Menu
+- Pause Menu
 
 Lock
 ---
-* Lock an enemy
-* Change locked enemy
-* Show only locked enemy health
-* Player always face locked enemy
+- Lock an enemy
+- Change locked enemy
+- Show only locked enemy health
+- Player always face locked enemy
 
 Sounds
 ---
-* Random sound when attacking
-* Different sounds when attack is missed or not
-* Ambient music
-* Footsteps depending of surface
+- Random sound when attacking
+- Different sounds when attack is missed or not
+- Ambient music
+- Footsteps depending of surface
+- Different musics depending time of day
 
 Visual FX
 ---
-* Walking effect
-* Blood effect
-* Day/Night cycle
+- Walking effect
+- Blood effect
+- Day/Night cycle
 
 <br>
 
